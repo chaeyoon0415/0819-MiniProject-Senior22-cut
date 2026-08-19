@@ -39,6 +39,151 @@
       cursor: pointer;
     }
 
+
+    /* ========================================
+       WELCOME SCREEN
+    ======================================== */
+
+    body.welcome-active {
+      overflow: hidden;
+    }
+
+    .welcome-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 40px 24px;
+
+      background:
+        linear-gradient(
+          180deg,
+          #f7fcf9 0%,
+          #ffffff 100%
+        );
+
+      opacity: 1;
+      visibility: visible;
+
+      transition:
+        opacity 0.35s ease,
+        visibility 0.35s ease;
+    }
+
+    .welcome-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .welcome-content {
+      width: 100%;
+      max-width: 760px;
+
+      text-align: center;
+    }
+
+    .welcome-icon {
+      width: 86px;
+      height: 86px;
+
+      margin: 0 auto 30px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background: #dff6eb;
+      color: #087a4d;
+
+      font-size: 42px;
+
+      box-shadow:
+        0 8px 24px rgba(27, 105, 72, 0.08);
+    }
+
+    .welcome-eyebrow {
+      margin-bottom: 18px;
+
+      font-size: 18px;
+      font-weight: 800;
+
+      color: #087a4d;
+      letter-spacing: -0.5px;
+    }
+
+    .welcome-title {
+      margin-bottom: 18px;
+
+      font-size: clamp(34px, 5vw, 52px);
+      line-height: 1.3;
+      font-weight: 800;
+
+      color: #172238;
+      letter-spacing: -2px;
+    }
+
+    .welcome-description {
+      margin-bottom: 42px;
+
+      font-size: clamp(18px, 2.5vw, 22px);
+      line-height: 1.7;
+
+      color: #66758a;
+      letter-spacing: -0.5px;
+    }
+
+    .welcome-start-button {
+      min-width: 300px;
+      min-height: 72px;
+
+      padding: 0 42px;
+
+      border: none;
+      border-radius: 14px;
+
+      background: #07945e;
+      color: #ffffff;
+
+      font-size: 22px;
+      font-weight: 800;
+
+      box-shadow:
+        0 10px 24px rgba(7, 148, 94, 0.18);
+
+      transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .welcome-start-button:hover {
+      background: #067c50;
+
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 14px 30px rgba(7, 148, 94, 0.22);
+    }
+
+    .welcome-start-button:focus-visible {
+      outline: 4px solid rgba(7, 148, 94, 0.22);
+      outline-offset: 4px;
+    }
+
+    .welcome-hint {
+      margin-top: 20px;
+
+      font-size: 15px;
+      color: #8995a5;
+    }
+
     /* ========================================
        HEADER
     ======================================== */
@@ -727,6 +872,38 @@
 
     @media (max-width: 800px) {
 
+
+      .welcome-screen {
+        padding: 30px 20px;
+      }
+
+      .welcome-icon {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 24px;
+        font-size: 34px;
+      }
+
+      .welcome-eyebrow {
+        font-size: 16px;
+        margin-bottom: 14px;
+      }
+
+      .welcome-title {
+        letter-spacing: -1.5px;
+      }
+
+      .welcome-description {
+        margin-bottom: 32px;
+      }
+
+      .welcome-start-button {
+        width: 100%;
+        min-width: 0;
+        min-height: 68px;
+        font-size: 20px;
+      }
+
       header {
         padding: 0 20px;
       }
@@ -779,7 +956,58 @@
   </style>
 </head>
 
-<body>
+<body class="welcome-active">
+
+
+  <!-- ========================================
+       WELCOME SCREEN
+       사이트 최초 진입 시 먼저 보여주는 시작 화면
+  ======================================== -->
+
+  <div
+    id="welcomeScreen"
+    class="welcome-screen"
+    role="dialog"
+    aria-labelledby="welcomeTitle"
+  >
+
+    <div class="welcome-content">
+
+      <div class="welcome-icon" aria-hidden="true">
+        🌱
+      </div>
+
+      <p class="welcome-eyebrow">
+        시니어 자격증 신청
+      </p>
+
+      <h1 id="welcomeTitle" class="welcome-title">
+        새로운 인생을 시작하는<br />
+        여러분을 응원합니다.
+      </h1>
+
+      <p class="welcome-description">
+        자격증 취득을 위한 첫걸음,<br />
+        여기서 쉽고 편하게 시작하세요.
+      </p>
+
+      <button
+        id="startApplicationButton"
+        class="welcome-start-button"
+        type="button"
+        onclick="startApplication()"
+      >
+        자격증 접수하기
+      </button>
+
+      <p class="welcome-hint">
+        버튼을 누르면 자격증 선택부터 시작합니다.
+      </p>
+
+    </div>
+
+  </div>
+
 
   <!-- ========================================
        HEADER
@@ -1576,6 +1804,46 @@
 
   <script>
 
+
+    /* ----------------------------------------
+       첫 진입 웰컴 화면
+    ---------------------------------------- */
+
+    function startApplication() {
+
+      const welcomeScreen =
+        document.getElementById("welcomeScreen");
+
+      if (!welcomeScreen) return;
+
+      welcomeScreen.classList.add("hidden");
+
+      document.body.classList.remove("welcome-active");
+
+      // 접수 화면은 항상 1단계부터 시작
+      window.scrollTo({
+        top: 0,
+        behavior: "instant"
+      });
+
+      // 웰컴 화면이 사라진 뒤 기존 header가 정상적으로 보이도록 함
+      setTimeout(() => {
+
+        const selectSection =
+          document.getElementById("select");
+
+        if (selectSection) {
+          window.scrollTo({
+            top: 0,
+            behavior: "instant"
+          });
+        }
+
+      }, 350);
+
+    }
+
+
     /* ----------------------------------------
        자격증 데이터
     ---------------------------------------- */
@@ -1719,28 +1987,23 @@
     });
 
     function handleAdminSecretClick() {
-      // 5번 연속 클릭 시 관리자 페이지로 이동
-      adminClickCount++;
+  adminClickCount++;
 
-      if (adminClickTimer) {
-        clearTimeout(adminClickTimer);
-      }
+  if (adminClickTimer) {
+    clearTimeout(adminClickTimer);
+  }
 
-      if (adminClickCount >= 5) {
-        adminClickCount = 0;
-        window.scrollTo(0, 0);
-        location.href = "/admin.html";
-        return;
-      }
+  if (adminClickCount >= 5) {
+    adminClickCount = 0;
+    window.scrollTo(0, 0);
+    location.href = "/admin.html";
+    return;
+  }
 
-      adminClickTimer = setTimeout(() => {
-        adminClickCount = 0;
-      }, 1000);
-
-      // 로고 클릭 시 새로고침 + 최상단 이동 (관리자 5번 클릭이 아닐 때)
-      window.scrollTo(0, 0);
-      window.location.reload();
-    }
+  adminClickTimer = setTimeout(() => {
+    adminClickCount = 0;
+  }, 1000);
+}
 
 
     /* ----------------------------------------
