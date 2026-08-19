@@ -1703,6 +1703,11 @@
             placeholder="예) 010-0000-0000"
           />
 
+          <p
+            id="phoneError"
+            class="form-error"
+          ></p>
+
         </div>
 
 
@@ -2409,11 +2414,17 @@
       const birthInput =
         document.getElementById("birth");
 
+      const phoneInput =
+        document.getElementById("phone");
+
       const nameError =
         document.getElementById("nameError");
 
       const birthError =
         document.getElementById("birthError");
+
+      const phoneError =
+        document.getElementById("phoneError");
 
 
       if (nameInput) {
@@ -2422,6 +2433,10 @@
 
       if (birthInput) {
         birthInput.classList.remove("input-error");
+      }
+
+      if (phoneInput) {
+        phoneInput.classList.remove("input-error");
       }
 
       if (nameError) {
@@ -2434,10 +2449,15 @@
         birthError.textContent = "";
       }
 
+      if (phoneError) {
+        phoneError.classList.remove("show");
+        phoneError.textContent = "";
+      }
+
     }
 
 
-    function showNameError(message) {
+    function showNameError(message, shouldFocus = true) {
 
       const nameInput =
         document.getElementById("name");
@@ -2451,12 +2471,14 @@
 
       nameError.classList.add("show");
 
-      nameInput.focus();
+      if (shouldFocus) {
+        nameInput.focus();
+      }
 
     }
 
 
-    function showBirthError(message) {
+    function showBirthError(message, shouldFocus = true) {
 
       const birthInput =
         document.getElementById("birth");
@@ -2470,7 +2492,30 @@
 
       birthError.classList.add("show");
 
-      birthInput.focus();
+      if (shouldFocus) {
+        birthInput.focus();
+      }
+
+    }
+
+
+    function showPhoneError(message, shouldFocus = true) {
+
+      const phoneInput =
+        document.getElementById("phone");
+
+      const phoneError =
+        document.getElementById("phoneError");
+
+      phoneInput.classList.add("input-error");
+
+      phoneError.textContent = message;
+
+      phoneError.classList.add("show");
+
+      if (shouldFocus) {
+        phoneInput.focus();
+      }
 
     }
 
@@ -2545,9 +2590,7 @@
 
       if (!phone) {
 
-        alert("연락처를 입력해주세요.");
-
-        document.getElementById("phone").focus();
+        showPhoneError("연락처를 입력해주세요.");
 
         return;
 
@@ -2559,9 +2602,9 @@
 
       if (phoneNumber.length !== 11) {
 
-        alert("연락처를 11자리로 입력해주세요.\n예: 010-1234-5678");
-
-        document.getElementById("phone").focus();
+        showPhoneError(
+          "연락처를 11자리로 입력해주세요. 예: 010-1234-5678"
+        );
 
         return;
 
@@ -2668,9 +2711,7 @@
 
       if (!phone) {
 
-        alert("연락처를 입력해주세요.");
-
-        document.getElementById("phone").focus();
+        showPhoneError("연락처를 입력해주세요.");
 
         return;
 
@@ -2681,9 +2722,9 @@
 
       if (phoneNumber.length !== 11) {
 
-        alert("연락처를 11자리로 입력해주세요.\n예: 010-1234-5678");
-
-        document.getElementById("phone").focus();
+        showPhoneError(
+          "연락처를 11자리로 입력해주세요. 예: 010-1234-5678"
+        );
 
         return;
 
@@ -2964,7 +3005,8 @@
 
 
     /* ----------------------------------------
-       생년월일 숫자만 입력
+       입력 중에는 오류를 표시하지 않고,
+       다른 입력칸으로 이동할 때 오류 확인
     ---------------------------------------- */
 
     document
@@ -2978,38 +3020,65 @@
               .replace(/[^0-9]/g, "")
               .slice(0, 8);
 
+        }
+      );
+
+
+    document
+      .getElementById("name")
+      .addEventListener(
+        "blur",
+        function() {
+
+          const name = this.value.trim();
+          const nameError =
+            document.getElementById("nameError");
+
           this.classList.remove("input-error");
 
-          const birthError =
-            document.getElementById("birthError");
+          if (nameError) {
+            nameError.classList.remove("show");
+            nameError.textContent = "";
+          }
 
-          if (birthError) {
-            birthError.classList.remove("show");
-            birthError.textContent = "";
+          if (!name) {
+            showNameError("이름을 입력해주세요.", false);
+            return;
+          }
+
+          if (!/^[가-힣]{2,4}$/.test(name)) {
+            showNameError(
+              "이름은 한글 2~4글자로 입력해주세요. 예: 홍길동",
+              false
+            );
           }
 
         }
       );
 
 
-    /* ----------------------------------------
-       이름 입력 시 오류 표시 제거
-    ---------------------------------------- */
-
     document
-      .getElementById("name")
+      .getElementById("birth")
       .addEventListener(
-        "input",
+        "blur",
         function() {
+
+          const birth = this.value.trim();
+          const birthError =
+            document.getElementById("birthError");
 
           this.classList.remove("input-error");
 
-          const nameError =
-            document.getElementById("nameError");
+          if (birthError) {
+            birthError.classList.remove("show");
+            birthError.textContent = "";
+          }
 
-          if (nameError) {
-            nameError.classList.remove("show");
-            nameError.textContent = "";
+          if (!/^\d{8}$/.test(birth)) {
+            showBirthError(
+              "생년월일을 숫자 8자리로 입력해주세요.",
+              false
+            );
           }
 
         }
@@ -3031,7 +3100,6 @@
               .replace(/[^0-9]/g, "")
               .slice(0, 11);
 
-
           if (value.length >= 8) {
 
             value =
@@ -3050,13 +3118,47 @@
 
           }
 
-
           this.value =
             value.replace(/-$/, "");
 
         }
       );
 
+
+    document
+      .getElementById("phone")
+      .addEventListener(
+        "blur",
+        function() {
+
+          const phone = this.value.trim();
+          const phoneError =
+            document.getElementById("phoneError");
+
+          this.classList.remove("input-error");
+
+          if (phoneError) {
+            phoneError.classList.remove("show");
+            phoneError.textContent = "";
+          }
+
+          if (!phone) {
+            showPhoneError("연락처를 입력해주세요.", false);
+            return;
+          }
+
+          const phoneNumber =
+            phone.replace(/[^0-9]/g, "");
+
+          if (phoneNumber.length !== 11) {
+            showPhoneError(
+              "연락처를 11자리로 입력해주세요. 예: 010-1234-5678",
+              false
+            );
+          }
+
+        }
+      );
   </script>
 
 </body>
