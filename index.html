@@ -1709,7 +1709,17 @@
     let adminClickCount = 0;
     let adminClickTimer = null;
 
+    // 브라우저 새로고침 시 스크롤 위치를 최상단으로 초기화
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
+    window.addEventListener('beforeunload', () => {
+      window.scrollTo(0, 0);
+    });
+
     function handleAdminSecretClick() {
+      // 5번 연속 클릭 시 관리자 페이지로 이동
       adminClickCount++;
 
       if (adminClickTimer) {
@@ -1718,6 +1728,7 @@
 
       if (adminClickCount >= 5) {
         adminClickCount = 0;
+        window.scrollTo(0, 0);
         location.href = "/admin.html";
         return;
       }
@@ -1725,6 +1736,10 @@
       adminClickTimer = setTimeout(() => {
         adminClickCount = 0;
       }, 1000);
+
+      // 로고 클릭 시 새로고침 + 최상단 이동 (관리자 5번 클릭이 아닐 때)
+      window.scrollTo(0, 0);
+      window.location.reload();
     }
 
 
