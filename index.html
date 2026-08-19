@@ -726,6 +726,106 @@
     }
 
     /* ========================================
+       개인정보 동의
+    ======================================== */
+
+    .privacy-consent {
+      margin-top: 22px;
+      padding: 22px;
+      border: 2px solid #dfe8e3;
+      border-radius: 14px;
+      background: #ffffff;
+    }
+
+    .privacy-consent-label {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      font-size: 18px;
+      color: #26354a;
+    }
+
+    .privacy-consent-label input {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      accent-color: #07945e;
+      cursor: pointer;
+    }
+
+    .privacy-consent-label strong {
+      font-weight: 800;
+    }
+
+    .privacy-detail {
+      margin-top: 16px;
+      margin-left: 42px;
+      padding-left: 16px;
+      border-left: 4px solid #e7ece9;
+    }
+
+    .privacy-detail p {
+      margin: 9px 0;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #687789;
+    }
+
+    .privacy-detail strong {
+      color: #435268;
+    }
+
+    /* ========================================
+       글자 크기 크게
+    ======================================== */
+
+    #fontSizeButton {
+      padding: 10px 14px;
+      border: 2px solid #d0dad5;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #26354a;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    #fontSizeButton:hover {
+      border-color: #0b9460;
+      color: #087a4d;
+    }
+
+    body.large-text .progress { font-size: 17px; }
+    body.large-text .section-title { font-size: 36px; }
+    body.large-text .section-description { font-size: 20px; }
+    body.large-text .search-label,
+    body.large-text .form-label { font-size: 20px; }
+    body.large-text .certificate-name { font-size: 24px; }
+    body.large-text .certificate-description { font-size: 17px; }
+    body.large-text .certificate-search-input { font-size: 20px; }
+    body.large-text .search-help,
+    body.large-text .help-text,
+    body.large-text .search-result-message { font-size: 17px; }
+    body.large-text .detail-title { font-size: 30px; }
+    body.large-text .detail-description { font-size: 18px; }
+    body.large-text .info-row { font-size: 19px; }
+    body.large-text .form-input { font-size: 20px; }
+    body.large-text .input-help { font-size: 16px; }
+    body.large-text .confirm-title { font-size: 26px; }
+    body.large-text .confirm-label,
+    body.large-text .confirm-value { font-size: 19px; }
+    body.large-text .confirm-warning { font-size: 17px; }
+    body.large-text .privacy-consent-label { font-size: 21px; }
+    body.large-text .privacy-detail p { font-size: 18px; }
+    body.large-text .primary-button,
+    body.large-text .secondary-button { font-size: 20px; }
+    body.large-text .complete h2 { font-size: 32px; }
+    body.large-text .complete p { font-size: 18px; }
+    body.large-text .service-box h3 { font-size: 23px; }
+    body.large-text .service-item span { font-size: 17px; }
+
+    /* ========================================
        5. 완료
     ======================================== */
 
@@ -1030,6 +1130,14 @@
 
       <button onclick="showHelp()">
         자격증 문의
+      </button>
+
+      <button
+        type="button"
+        id="fontSizeButton"
+        onclick="toggleLargeText()"
+      >
+        글자 크기 크게 A+
       </button>
     </nav>
 
@@ -1644,6 +1752,40 @@
 
         <div class="confirm-warning">
           입력하신 정보가 정확한지 확인해주세요.
+        </div>
+
+
+        <div class="privacy-consent">
+
+          <label class="privacy-consent-label">
+
+            <input
+              type="checkbox"
+              id="privacyConsent"
+            />
+
+            <span>
+              <strong>[필수] 개인정보 수집·이용에 동의합니다</strong>
+            </span>
+
+          </label>
+
+          <div class="privacy-detail">
+
+            <p>
+              <strong>받는 정보</strong> — 이름, 생년월일, 연락처, 신청 자격증
+            </p>
+
+            <p>
+              <strong>쓰는 곳</strong> — 자격증 필기 접수를 대신 해 드리는 데에만 사용됩니다.
+            </p>
+
+            <p>
+              <strong>보관 기간</strong> — 접수 완료 후 2년간 보관 후 폐기합니다.
+            </p>
+
+          </div>
+
         </div>
 
 
@@ -2351,6 +2493,20 @@ if (phoneNumber.length !== 11) {
 }
 
 
+  const privacyConsent =
+    document.getElementById("privacyConsent");
+
+  if (!privacyConsent.checked) {
+
+    alert("개인정보 수집·이용에 동의해주세요.");
+
+    privacyConsent.focus();
+
+    return;
+
+  }
+
+
   // -----------------------------
   // 신청 버튼 잠시 비활성화
   // -----------------------------
@@ -2488,6 +2644,30 @@ if (phoneNumber.length !== 11) {
   }
 
 }
+
+
+    /* ----------------------------------------
+       글자 크기 조절
+    ---------------------------------------- */
+
+    function toggleLargeText() {
+
+      document.body.classList.toggle("large-text");
+
+      const button =
+        document.getElementById("fontSizeButton");
+
+      if (document.body.classList.contains("large-text")) {
+
+        button.textContent = "글자 크기 기본 A";
+
+      } else {
+
+        button.textContent = "글자 크기 크게 A+";
+
+      }
+
+    }
 
 
     /* ----------------------------------------
