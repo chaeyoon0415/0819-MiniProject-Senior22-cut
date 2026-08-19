@@ -286,21 +286,28 @@
       align-items: center;
       justify-content: center;
 
-      width: 30px;
-      height: 30px;
+      min-width: 88px;
+      height: 58px;
 
-      border-radius: 50%;
+      padding: 0 14px;
+
+      border-radius: 30px;
 
       background: #dff6eb;
       color: #087a4d;
 
-      font-size: 15px;
+      font-size: 30px;
       font-weight: 800;
 
-      margin-right: 10px;
+      white-space: nowrap;
+
+      margin-right: 14px;
     }
 
     .section-title {
+      display: flex;
+      align-items: center;
+
       font-size: 30px;
       font-weight: 800;
 
@@ -662,6 +669,33 @@
     }
 
     /* ========================================
+       입력 오류 안내
+    ======================================== */
+
+    .form-error {
+      display: none;
+
+      margin-top: 9px;
+
+      color: #c62828;
+
+      font-size: 16px;
+      font-weight: 800;
+
+      line-height: 1.5;
+    }
+
+    .form-error.show {
+      display: block;
+    }
+
+    .form-input.input-error {
+      border: 2px solid #c62828;
+
+      background: #fff5f5;
+    }
+
+    /* ========================================
        4. 신청 확인
     ======================================== */
 
@@ -812,6 +846,7 @@
     body.large-text .info-row { font-size: 19px; }
     body.large-text .form-input { font-size: 20px; }
     body.large-text .input-help { font-size: 16px; }
+    body.large-text .form-error { font-size: 18px; }
     body.large-text .confirm-title { font-size: 26px; }
     body.large-text .confirm-label,
     body.large-text .confirm-value { font-size: 19px; }
@@ -993,7 +1028,6 @@
     ======================================== */
 
     @media (max-width: 800px) {
-
 
       .welcome-screen {
         padding: 30px 20px;
@@ -1616,6 +1650,11 @@
             placeholder="이름을 입력해주세요"
           />
 
+          <p
+            id="nameError"
+            class="form-error"
+          ></p>
+
         </div>
 
 
@@ -1635,6 +1674,11 @@
             maxlength="8"
             placeholder="예) 19600101"
           />
+
+          <p
+            id="birthError"
+            class="form-error"
+          ></p>
 
           <p class="input-help">
             숫자 8자리로 입력해주세요.
@@ -1888,7 +1932,7 @@
 
 
     <!-- ========================================
-         시니어 서비스
+       시니어 서비스
     ======================================== -->
 
     <div class="service-box">
@@ -2188,7 +2232,7 @@
     function normalizeSearchText(value) {
       return value
         .toLowerCase()
-        .replace(/\\s+/g, "")
+        .replace(/\s+/g, "")
         .trim();
     }
 
@@ -2354,6 +2398,84 @@
 
 
     /* ----------------------------------------
+       입력 오류 표시
+    ---------------------------------------- */
+
+    function clearFormErrors() {
+
+      const nameInput =
+        document.getElementById("name");
+
+      const birthInput =
+        document.getElementById("birth");
+
+      const nameError =
+        document.getElementById("nameError");
+
+      const birthError =
+        document.getElementById("birthError");
+
+
+      if (nameInput) {
+        nameInput.classList.remove("input-error");
+      }
+
+      if (birthInput) {
+        birthInput.classList.remove("input-error");
+      }
+
+      if (nameError) {
+        nameError.classList.remove("show");
+        nameError.textContent = "";
+      }
+
+      if (birthError) {
+        birthError.classList.remove("show");
+        birthError.textContent = "";
+      }
+
+    }
+
+
+    function showNameError(message) {
+
+      const nameInput =
+        document.getElementById("name");
+
+      const nameError =
+        document.getElementById("nameError");
+
+      nameInput.classList.add("input-error");
+
+      nameError.textContent = message;
+
+      nameError.classList.add("show");
+
+      nameInput.focus();
+
+    }
+
+
+    function showBirthError(message) {
+
+      const birthInput =
+        document.getElementById("birth");
+
+      const birthError =
+        document.getElementById("birthError");
+
+      birthInput.classList.add("input-error");
+
+      birthError.textContent = message;
+
+      birthError.classList.add("show");
+
+      birthInput.focus();
+
+    }
+
+
+    /* ----------------------------------------
        신청 정보 확인
     ---------------------------------------- */
 
@@ -2372,6 +2494,9 @@
           .value.trim();
 
 
+      clearFormErrors();
+
+
       if (!selectedCertificate) {
 
         alert("자격증을 먼저 선택해주세요.");
@@ -2385,9 +2510,9 @@
 
       if (!name) {
 
-        alert("이름을 입력해주세요.");
-
-        document.getElementById("name").focus();
+        showNameError(
+          "이름을 입력해주세요."
+        );
 
         return;
 
@@ -2398,9 +2523,9 @@
       // 이름 입력 단계에서 바로 안내
       if (!/^[가-힣]{2,4}$/.test(name)) {
 
-        alert("이름은 한글 2~4글자로 입력해주세요.\n예: 홍길동");
-
-        document.getElementById("name").focus();
+        showNameError(
+          "이름은 한글 2~4글자로 입력해주세요. 예: 홍길동"
+        );
 
         return;
 
@@ -2409,9 +2534,9 @@
 
       if (!/^\d{8}$/.test(birth)) {
 
-        alert("생년월일을 숫자 8자리로 입력해주세요.");
-
-        document.getElementById("birth").focus();
+        showBirthError(
+          "생년월일을 숫자 8자리로 입력해주세요."
+        );
 
         return;
 
@@ -2420,26 +2545,27 @@
 
       if (!phone) {
 
-  alert("연락처를 입력해주세요.");
+        alert("연락처를 입력해주세요.");
 
-  document.getElementById("phone").focus();
+        document.getElementById("phone").focus();
 
-  return;
+        return;
 
-}
+      }
 
-const phoneNumber =
-  phone.replace(/[^0-9]/g, "");
 
-if (phoneNumber.length !== 11) {
+      const phoneNumber =
+        phone.replace(/[^0-9]/g, "");
 
-  alert("연락처를 11자리로 입력해주세요.\n예: 010-1234-5678");
+      if (phoneNumber.length !== 11) {
 
-  document.getElementById("phone").focus();
+        alert("연락처를 11자리로 입력해주세요.\n예: 010-1234-5678");
 
-  return;
+        document.getElementById("phone").focus();
 
-}
+        return;
+
+      }
 
 
       // 확인 화면에 정보 표시
@@ -2468,243 +2594,255 @@ if (phoneNumber.length !== 11) {
 
     async function submitApplication() {
 
-  const name =
-    document.getElementById("name")
-      .value.trim();
+      const name =
+        document.getElementById("name")
+          .value.trim();
 
-  const birth =
-    document.getElementById("birth")
-      .value.trim();
+      const birth =
+        document.getElementById("birth")
+          .value.trim();
 
-  const phone =
-    document.getElementById("phone")
-      .value.trim();
+      const phone =
+        document.getElementById("phone")
+          .value.trim();
 
 
-  // -----------------------------
-  // 입력값 확인
-  // -----------------------------
+      // -----------------------------
+      // 입력값 확인
+      // -----------------------------
 
-  if (!selectedCertificate) {
+      if (!selectedCertificate) {
 
-    alert("자격증을 먼저 선택해주세요.");
+        alert("자격증을 먼저 선택해주세요.");
 
-    scrollToSection("select");
+        scrollToSection("select");
 
-    return;
-  }
+        return;
+      }
 
 
-  if (!name) {
+      if (!name) {
 
-    alert("이름을 입력해주세요.");
+        scrollToSection("applicant");
 
-    document.getElementById("name").focus();
+        setTimeout(() => {
+          showNameError(
+            "이름을 입력해주세요."
+          );
+        }, 400);
 
-    return;
-  }
+        return;
+      }
 
 
-  // 이름은 한글 완성형 2~4글자만 허용
-  // ㄱ, ㅎ, ㅏ 같은 자음/모음만 입력하거나
-  // 영어/숫자/특수문자가 포함된 경우 접수 차단
-  if (!/^[가-힣]{2,4}$/.test(name)) {
+      // 이름은 한글 완성형 2~4글자만 허용
+      // ㄱ, ㅎ, ㅏ 같은 자음/모음만 입력하거나
+      // 영어/숫자/특수문자가 포함된 경우 접수 차단
+      if (!/^[가-힣]{2,4}$/.test(name)) {
 
-    alert("이름은 한글 2~4글자로 입력해주세요.\n예: 홍길동");
+        scrollToSection("applicant");
 
-    document.getElementById("name").focus();
+        setTimeout(() => {
+          showNameError(
+            "이름은 한글 2~4글자로 입력해주세요. 예: 홍길동"
+          );
+        }, 400);
 
-    return;
-  }
+        return;
+      }
 
 
-  if (!/^\d{8}$/.test(birth)) {
+      if (!/^\d{8}$/.test(birth)) {
 
-    alert("생년월일을 숫자 8자리로 입력해주세요.");
+        scrollToSection("applicant");
 
-    document.getElementById("birth").focus();
+        setTimeout(() => {
+          showBirthError(
+            "생년월일을 숫자 8자리로 입력해주세요."
+          );
+        }, 400);
 
-    return;
-  }
+        return;
+      }
 
 
-  if (!phone) {
+      if (!phone) {
 
-  alert("연락처를 입력해주세요.");
+        alert("연락처를 입력해주세요.");
 
-  document.getElementById("phone").focus();
+        document.getElementById("phone").focus();
 
-  return;
+        return;
 
-}
+      }
 
-const phoneNumber =
-  phone.replace(/[^0-9]/g, "");
+      const phoneNumber =
+        phone.replace(/[^0-9]/g, "");
 
-if (phoneNumber.length !== 11) {
+      if (phoneNumber.length !== 11) {
 
-  alert("연락처를 11자리로 입력해주세요.\n예: 010-1234-5678");
+        alert("연락처를 11자리로 입력해주세요.\n예: 010-1234-5678");
 
-  document.getElementById("phone").focus();
+        document.getElementById("phone").focus();
 
-  return;
+        return;
 
-}
+      }
 
 
-  const privacyConsent =
-    document.getElementById("privacyConsent");
+      const privacyConsent =
+        document.getElementById("privacyConsent");
 
-  if (!privacyConsent.checked) {
+      if (!privacyConsent.checked) {
 
-    alert("개인정보 수집·이용에 동의해주세요.");
+        alert("개인정보 수집·이용에 동의해주세요.");
 
-    privacyConsent.focus();
+        privacyConsent.focus();
 
-    return;
+        return;
 
-  }
+      }
 
 
-  // -----------------------------
-  // 신청 버튼 잠시 비활성화
-  // -----------------------------
+      // -----------------------------
+      // 신청 버튼 잠시 비활성화
+      // -----------------------------
 
-  const button =
-    document.querySelector(
-      '#confirm .primary-button'
-    );
+      const button =
+        document.querySelector(
+          '#confirm .primary-button'
+        );
 
-  if (button) {
-    button.disabled = true;
-    button.textContent = "신청 중...";
-  }
+      if (button) {
+        button.disabled = true;
+        button.textContent = "신청 중...";
+      }
 
 
-  try {
+      try {
 
-    // -----------------------------
-    // Vercel API로 신청 정보 전송
-    // -----------------------------
+        // -----------------------------
+        // Vercel API로 신청 정보 전송
+        // -----------------------------
 
-    const response =
-      await fetch("/api/applications", {
+        const response =
+          await fetch("/api/applications", {
 
-        method: "POST",
+            method: "POST",
 
-        headers: {
-          "Content-Type": "application/json"
-        },
+            headers: {
+              "Content-Type": "application/json"
+            },
 
-        body: JSON.stringify({
+            body: JSON.stringify({
 
-          certificate:
-            selectedCertificate,
+              certificate:
+                selectedCertificate,
 
-          name:
-            name,
+              name:
+                name,
 
-          birth:
-            birth,
+              birth:
+                birth,
 
-          phone:
-            phone
+              phone:
+                phone
 
-        })
+            })
 
-      });
+          });
 
 
-    const result =
-      await response.json();
+        const result =
+          await response.json();
 
 
-    // -----------------------------
-    // 저장 실패
-    // -----------------------------
+        // -----------------------------
+        // 저장 실패
+        // -----------------------------
 
-    if (!response.ok || !result.success) {
+        if (!response.ok || !result.success) {
 
-      throw new Error(
-        result.message ||
-        "접수 저장에 실패했습니다."
-      );
+          throw new Error(
+            result.message ||
+            "접수 저장에 실패했습니다."
+          );
+
+        }
+
+
+        // -----------------------------
+        // 신청번호 생성
+        // -----------------------------
+
+        const today =
+          new Date();
+
+        const year =
+          today.getFullYear();
+
+        const month =
+          String(today.getMonth() + 1)
+            .padStart(2, "0");
+
+        const day =
+          String(today.getDate())
+            .padStart(2, "0");
+
+        const random =
+          String(
+            Math.floor(
+              Math.random() * 10000
+            )
+          ).padStart(4, "0");
+
+
+        const applicationNumber =
+          `${year}${month}${day}-${random}`;
+
+
+        document.getElementById(
+          "applicationNumber"
+        ).textContent =
+          applicationNumber;
+
+
+        // -----------------------------
+        // 완료 화면 표시 후 이동
+        // -----------------------------
+
+        document.getElementById("complete").style.display = "block";
+
+        scrollToSection("complete");
+
+
+      } catch (error) {
+
+        console.error(
+          "신청 저장 오류:",
+          error
+        );
+
+        alert(
+          "접수 중 문제가 발생했습니다.\n" +
+          "잠시 후 다시 시도해주세요."
+        );
+
+
+      } finally {
+
+        if (button) {
+
+          button.disabled = false;
+
+          button.textContent =
+            "신청하기";
+
+        }
+
+      }
 
     }
-
-
-    // -----------------------------
-    // 신청번호 생성
-    // -----------------------------
-
-    const today =
-      new Date();
-
-    const year =
-      today.getFullYear();
-
-    const month =
-      String(today.getMonth() + 1)
-        .padStart(2, "0");
-
-    const day =
-      String(today.getDate())
-        .padStart(2, "0");
-
-    const random =
-      String(
-        Math.floor(
-          Math.random() * 10000
-        )
-      ).padStart(4, "0");
-
-
-    const applicationNumber =
-      `${year}${month}${day}-${random}`;
-
-
-    document.getElementById(
-      "applicationNumber"
-    ).textContent =
-      applicationNumber;
-
-
-    // -----------------------------
-    // 완료 화면 표시 후 이동
-    // -----------------------------
-
-    document.getElementById("complete").style.display = "block";
-
-    scrollToSection("complete");
-
-
-  } catch (error) {
-
-    console.error(
-      "신청 저장 오류:",
-      error
-    );
-
-    alert(
-      "접수 중 문제가 발생했습니다.\n" +
-      "잠시 후 다시 시도해주세요."
-    );
-
-
-  } finally {
-
-    if (button) {
-
-      button.disabled = false;
-
-      button.textContent =
-        "신청하기";
-
-    }
-
-  }
-
-}
 
 
     /* ----------------------------------------
@@ -2742,6 +2880,8 @@ if (phoneNumber.length !== 11) {
       document.getElementById("name").value = "";
       document.getElementById("birth").value = "";
       document.getElementById("phone").value = "";
+
+      clearFormErrors();
 
       document.getElementById("confirmCertificate").textContent = "-";
       document.getElementById("confirmName").textContent = "-";
@@ -2837,6 +2977,40 @@ if (phoneNumber.length !== 11) {
             this.value
               .replace(/[^0-9]/g, "")
               .slice(0, 8);
+
+          this.classList.remove("input-error");
+
+          const birthError =
+            document.getElementById("birthError");
+
+          if (birthError) {
+            birthError.classList.remove("show");
+            birthError.textContent = "";
+          }
+
+        }
+      );
+
+
+    /* ----------------------------------------
+       이름 입력 시 오류 표시 제거
+    ---------------------------------------- */
+
+    document
+      .getElementById("name")
+      .addEventListener(
+        "input",
+        function() {
+
+          this.classList.remove("input-error");
+
+          const nameError =
+            document.getElementById("nameError");
+
+          if (nameError) {
+            nameError.classList.remove("show");
+            nameError.textContent = "";
+          }
 
         }
       );
