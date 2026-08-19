@@ -13,8 +13,8 @@
     body {
       margin: 0;
       font-family: Arial, "Noto Sans KR", sans-serif;
-      background: #0f1b2d;
-      color: #ffffff;
+      background: #FFFFFF;
+      color: #1F2937;
     }
 
     .container {
@@ -32,17 +32,19 @@
     .header h1 {
       font-size: 38px;
       margin: 0 0 12px;
+      color: #1F2937;
     }
 
     .header p {
       font-size: 19px;
-      color: #aeb9c9;
+      color: #64748B;
       margin: 0;
     }
 
     .section-title {
       font-size: 27px;
       margin-bottom: 20px;
+      color: #1F2937;
     }
 
     /* 자격증 카드 영역 */
@@ -60,27 +62,28 @@
       padding: 28px;
       text-align: left;
 
-      background: #1a283b;
-      color: white;
+      background: #F0FDF4;
+      color: #1F2937;
 
-      border: 1px solid #304158;
+      border: 1px solid #BBF7D0;
       border-radius: 17px;
 
       cursor: pointer;
       transition: 0.2s;
 
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     .certificate-card:hover {
       transform: translateY(-2px);
-      border-color: #4b8cff;
-      background: #1d2d43;
+      border-color: #10B981;
+      background: #DCFCE7;
     }
 
     .certificate-card.selected {
-      border: 2px solid #4b8cff;
-      background: #20344e;
+      border: 2px solid #10B981;
+      background: #DCFCE7;
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
     }
 
     /* 접수 유형 */
@@ -89,8 +92,8 @@
       padding: 8px 13px;
       margin-bottom: 18px;
 
-      background: #075d5b;
-      color: #32d6a4;
+      background: #D1FAE5;
+      color: #047857;
 
       border-radius: 9px;
 
@@ -103,12 +106,13 @@
       font-size: 25px;
       font-weight: bold;
       margin-bottom: 10px;
+      color: #166534;
     }
 
     /* 설명 */
     .certificate-description {
       font-size: 17px;
-      color: #aeb9c9;
+      color: #64748B;
       margin-bottom: 22px;
     }
 
@@ -120,14 +124,14 @@
 
       padding-top: 17px;
 
-      border-top: 1px solid #2b3a4f;
+      border-top: 1px solid #BBF7D0;
 
       font-size: 15px;
-      color: #b8c3d2;
+      color: #64748B;
     }
 
     .certificate-info strong {
-      color: #ffffff;
+      color: #166534;
     }
 
     .fee {
@@ -137,8 +141,8 @@
 
     /* 접수 신청 영역 */
     .application-section {
-      background: #1a283b;
-      border: 1px solid #304158;
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
       border-radius: 17px;
       padding: 35px;
     }
@@ -147,15 +151,16 @@
       padding: 18px;
       margin-bottom: 25px;
 
-      background: #111f31;
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
       border-radius: 12px;
 
       font-size: 19px;
-      color: #b8c3d2;
+      color: #64748B;
     }
 
     .selected-certificate strong {
-      color: #ffffff;
+      color: #166534;
     }
 
     .form-group {
@@ -168,28 +173,30 @@
 
       font-size: 19px;
       font-weight: bold;
+      color: #1F2937;
     }
 
     input {
       width: 100%;
       padding: 17px;
 
-      background: #111f31;
-      color: white;
+      background: #FFFFFF;
+      color: #1F2937;
 
-      border: 1px solid #3a4a60;
+      border: 1px solid #CBD5E1;
       border-radius: 10px;
 
       font-size: 18px;
     }
 
     input::placeholder {
-      color: #758297;
+      color: #94A3B8;
     }
 
     input:focus {
       outline: none;
-      border-color: #4b8cff;
+      border-color: #10B981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
     }
 
     .submit-button {
@@ -199,8 +206,8 @@
       border: none;
       border-radius: 12px;
 
-      background: #367ff5;
-      color: white;
+      background: #059669;
+      color: #FFFFFF;
 
       font-size: 21px;
       font-weight: bold;
@@ -209,7 +216,7 @@
     }
 
     .submit-button:hover {
-      background: #286ddd;
+      background: #047857;
     }
 
     .message {
@@ -218,7 +225,8 @@
       margin-top: 20px;
       padding: 15px;
 
-      background: #26374d;
+      background: #E2E8F0;
+      color: #1F2937;
       border-radius: 10px;
 
       font-size: 17px;
@@ -555,79 +563,204 @@
   </main>
 
 
-  <script>
+  <!-- Supabase JavaScript 라이브러리 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    let selectedCertificate = "";
+<script>
+  // ==========================================
+  // 1. Supabase 연결 설정
+  // ==========================================
 
-    // 자격증 선택
-    function selectCertificate(certificate, button) {
+  const SUPABASE_URL = "https://czqgtswyymonstdsykcd.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cWd0c3d5eW1vbnN0ZHN5a2NkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzc1MDgsImV4cCI6MjEwMjY1MzUwOH0.2sGfGimemwzE9Koy4z4zVQZr0B0Mb4VjLNxhk6xvhyU";
 
-      selectedCertificate = certificate;
-
-      const cards =
-        document.querySelectorAll(".certificate-card");
-
-      cards.forEach(card => {
-        card.classList.remove("selected");
-      });
-
-      button.classList.add("selected");
-
-      document.getElementById(
-        "selectedCertificate"
-      ).textContent = certificate;
-    }
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
 
-    // 접수 신청
-    function submitApplication() {
+  // ==========================================
+  // 2. 현재 선택된 자격증
+  // ==========================================
 
-      const name =
-        document.getElementById("name").value;
-
-      const phone =
-        document.getElementById("phone").value;
-
-      const message =
-        document.getElementById("message");
+  let selectedCertificate = "";
 
 
-      if (!selectedCertificate) {
+  // ==========================================
+  // 3. 자격증 선택
+  // ==========================================
 
-        message.style.display = "block";
+  function selectCertificate(certificate, button) {
 
-        message.textContent =
-          "먼저 자격증을 선택해주세요.";
+    selectedCertificate = certificate;
 
-        return;
-      }
+    // 모든 카드의 선택 표시 제거
+    const cards = document.querySelectorAll(".certificate-card");
+
+    cards.forEach(card => {
+      card.classList.remove("selected");
+    });
+
+    // 현재 선택한 카드 표시
+    button.classList.add("selected");
+
+    // 선택한 자격증 이름 표시
+    document.getElementById("selectedCertificate").textContent =
+      certificate;
+
+    // 기존 메시지 숨기기
+    const message = document.getElementById("message");
+    message.style.display = "none";
+  }
 
 
-      if (!name || !phone) {
+  // ==========================================
+  // 4. 접수 신청
+  // ==========================================
 
-        message.style.display = "block";
+  async function submitApplication() {
 
-        message.textContent =
-          "이름과 연락처를 입력해주세요.";
+    const name =
+      document.getElementById("name").value.trim();
 
-        return;
-      }
+    const phone =
+      document.getElementById("phone").value.trim();
 
+    const message =
+      document.getElementById("message");
+
+    const submitButton =
+      document.querySelector(".submit-button");
+
+
+    // ------------------------------------------
+    // 입력값 확인
+    // ------------------------------------------
+
+    if (!selectedCertificate) {
 
       message.style.display = "block";
-
       message.textContent =
-        `${name}님, ${selectedCertificate} 접수 신청이 완료되었습니다.`;
+        "먼저 자격증을 선택해주세요.";
 
-
-      console.log({
-        name: name,
-        phone: phone,
-        certificate: selectedCertificate
-      });
+      return;
     }
 
-  </script>
+
+    if (!name) {
+
+      message.style.display = "block";
+      message.textContent =
+        "이름을 입력해주세요.";
+
+      document.getElementById("name").focus();
+
+      return;
+    }
+
+
+    if (!phone) {
+
+      message.style.display = "block";
+      message.textContent =
+        "연락처를 입력해주세요.";
+
+      document.getElementById("phone").focus();
+
+      return;
+    }
+
+
+    // ------------------------------------------
+    // 중복 제출 방지
+    // ------------------------------------------
+
+    submitButton.disabled = true;
+    submitButton.textContent = "접수 중입니다...";
+
+
+    // ------------------------------------------
+    // Supabase에 데이터 저장
+    // ------------------------------------------
+
+    try {
+
+      const { data, error } =
+        await supabaseClient
+          .from("applications")
+          .insert([
+            {
+              name: name,
+              phone: phone,
+              certificate: selectedCertificate
+            }
+          ])
+          .select()
+          .single();
+
+
+      // ----------------------------------------
+      // 저장 실패
+      // ----------------------------------------
+
+      if (error) {
+
+        console.error("Supabase 오류:", error);
+
+        message.style.display = "block";
+        message.textContent =
+          "접수 신청 중 문제가 발생했습니다. 다시 시도해주세요.";
+
+        return;
+      }
+
+
+      // ----------------------------------------
+      // 저장 성공
+      // ----------------------------------------
+
+      console.log("접수 저장 성공:", data);
+
+      message.style.display = "block";
+      message.textContent =
+        `${name}님, ${selectedCertificate} 접수가 완료되었습니다.`;
+
+      // 입력창 초기화
+      document.getElementById("name").value = "";
+      document.getElementById("phone").value = "";
+
+
+      // 선택 표시 초기화
+      selectedCertificate = "";
+
+      document
+        .querySelectorAll(".certificate-card")
+        .forEach(card => {
+          card.classList.remove("selected");
+        });
+
+      document.getElementById("selectedCertificate").textContent =
+        "아직 선택하지 않았습니다.";
+
+
+    } catch (error) {
+
+      console.error("접수 처리 오류:", error);
+
+      message.style.display = "block";
+      message.textContent =
+        "접수 신청 중 문제가 발생했습니다. 다시 시도해주세요.";
+
+    } finally {
+
+      // 버튼 원상복구
+      submitButton.disabled = false;
+      submitButton.textContent = "접수 신청하기";
+    }
+  }
+
+</script>
 
 </body>
 </html>
