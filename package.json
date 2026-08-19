@@ -1,0 +1,24 @@
+{
+  "name": "0819_miniproject_senior",
+  "version": "1.0.0",
+  "description": "0819-MiniProject-Senior-real",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chaeyoon0415/0819-MiniProject-Senior22.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/chaeyoon0415/0819-MiniProject-Senior22/issues"
+  },
+  "homepage": "https://github.com/chaeyoon0415/0819-MiniProject-Senior22#readme",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.3"
+  }
+}
