@@ -1969,13 +1969,26 @@
 
       if (!phone) {
 
-        alert("연락처를 입력해주세요.");
+  alert("연락처를 입력해주세요.");
 
-        document.getElementById("phone").focus();
+  document.getElementById("phone").focus();
 
-        return;
+  return;
 
-      }
+}
+
+const phoneNumber =
+  phone.replace(/[^0-9]/g, "");
+
+if (phoneNumber.length !== 11) {
+
+  alert("연락처를 11자리로 입력해주세요.\n예: 010-1234-5678");
+
+  document.getElementById("phone").focus();
+
+  return;
+
+}
 
 
       // 확인 화면에 정보 표시
@@ -2053,12 +2066,26 @@
 
   if (!phone) {
 
-    alert("연락처를 입력해주세요.");
+  alert("연락처를 입력해주세요.");
 
-    document.getElementById("phone").focus();
+  document.getElementById("phone").focus();
 
-    return;
-  }
+  return;
+
+}
+
+const phoneNumber =
+  phone.replace(/[^0-9]/g, "");
+
+if (phoneNumber.length !== 11) {
+
+  alert("연락처를 11자리로 입력해주세요.\n예: 010-1234-5678");
+
+  document.getElementById("phone").focus();
+
+  return;
+
+}
 
 
   // -----------------------------
