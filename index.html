@@ -1781,7 +1781,7 @@
             </p>
 
             <p>
-              <strong>보관 기간</strong> — 접수 완료 후 2년간 보관 후 폐기합니다.
+              <strong>보관 기간</strong> — 접수 완료 후 2년간 보관 후 폐기됩니다.
             </p>
 
           </div>
@@ -2129,23 +2129,31 @@
     });
 
     function handleAdminSecretClick() {
-  adminClickCount++;
+      adminClickCount++;
 
-  if (adminClickTimer) {
-    clearTimeout(adminClickTimer);
-  }
+      if (adminClickTimer) {
+        clearTimeout(adminClickTimer);
+      }
 
-  if (adminClickCount >= 5) {
-    adminClickCount = 0;
-    window.scrollTo(0, 0);
-    location.href = "/admin.html";
-    return;
-  }
+      if (adminClickCount >= 5) {
+        adminClickCount = 0;
+        window.scrollTo(0, 0);
 
-  adminClickTimer = setTimeout(() => {
-    adminClickCount = 0;
-  }, 1000);
-}
+        const password = prompt("관리자 비밀번호를 입력해주세요.");
+
+        if (password === "1234") {
+          location.href = "/admin.html";
+        } else if (password !== null) {
+          alert("비밀번호가 올바르지 않습니다.");
+        }
+
+        return;
+      }
+
+      adminClickTimer = setTimeout(() => {
+        adminClickCount = 0;
+      }, 1000);
+    }
 
 
     /* ----------------------------------------
