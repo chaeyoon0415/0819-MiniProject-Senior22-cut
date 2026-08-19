@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>시니어 자격증 신청 | 관리자</title>
+
+  <style>
+    :root {
+      --green: #0b9560;
+      --green-dark: #087a4f;
+      --green-light: #e9f8f1;
+      --text: #17233b;
+      --sub: #71819a;
+      --line: #e1e8e5;
+      --bg: #f7faf9;
+      --white: #ffffff;
+      --danger: #c94b4b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+        "Noto Sans KR", "Malgun Gothic", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .header {
+      height: 86px;
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+    }
+
+    .logo {
+      color: var(--green);
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .admin-badge {
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: var(--green-light);
+      color: var(--green-dark);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .header-link {
+      border: 0;
+      background: transparent;
+      color: #31405a;
+      font-weight: 800;
+    }
+
+    .main {
+      width: min(1240px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 52px 0 80px;
+    }
+
+    .page-title {
+      margin-bottom: 30px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--green);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 36px;
+      line-height: 1.25;
+      letter-spacing: -1.8px;
+    }
+
+    .description {
+      margin: 10px 0 0;
+      color: var(--sub);
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 26px;
+    }
+
+    .summary-card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 25px 26px;
+      min-height: 140px;
+    }
+
+    .summary-label {
+      color: var(--sub);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .summary-value {
+      margin-top: 15px;
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .summary-value.green {
+      color: var(--green);
+    }
+
+    .summary-sub {
+      margin-top: 7px;
+      color: var(--sub);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .content-card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .content-header {
+      padding: 24px 26px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .content-title {
+      margin: 0;
+      font-size: 21px;
+      letter-spacing: -0.7px;
+    }
+
+    .content-count {
+      margin-top: 6px;
+      color: var(--sub);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .refresh-button {
+      border: 1px solid #d4dfda;
+      background: var(--white);
+      color: #31405a;
+      border-radius: 10px;
+      padding: 10px 15px;
+      font-weight: 800;
+    }
+
+    .refresh-button:hover {
+      background: #f5f8f7;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .csv-button {
+      border: 1px solid var(--green);
+      background: var(--green);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 15px;
+      font-weight: 800;
+    }
+
+    .csv-button:hover {
+      background: var(--green-dark);
+    }
+
+    .filters {
+      padding: 18px 26px;
+      background: #fbfcfc;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-tab {
+      border: 1px solid #d6e0dc;
+      background: var(--white);
+      color: #607087;
+      border-radius: 999px;
+      padding: 9px 16px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .filter-tab.active {
+      border-color: var(--green);
+      background: var(--green-light);
+      color: var(--green-dark);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 240px;
+      position: relative;
+    }
+
+    .search-box input,
+    .filters select {
+      width: 100%;
+      height: 44px;
+      border: 1px solid #d6e0dc;
+      border-radius: 10px;
+      background: var(--white);
+      padding: 0 14px;
+      color: var(--text);
+      outline: none;
+    }
+
+    .search-box input:focus,
+    .filters select:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(11, 149, 96, 0.10);
+    }
+
+    .certificate-filter {
+      width: 220px;
+    }
+
+    .date-range-filter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 10px;
+      border: 1px solid #d6e0dc;
+      border-radius: 10px;
+      background: var(--white);
+    }
+
+    .date-filter-label {
+      color: #607087;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .date-range-filter input[type="date"] {
+      height: 40px;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      outline: none;
+      min-width: 135px;
+    }
+
+    .date-separator {
+      color: #91a0b2;
+      font-weight: 800;
+    }
+
+    .clear-date-button {
+      border: 0;
+      background: #f3f6f5;
+      color: #607087;
+      border-radius: 7px;
+      padding: 7px 9px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .clear-date-button:hover {
+      background: #e8efec;
+    }
+
+    .confirm-cell {
+      width: 110px;
+    }
+
+    .confirm-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      color: #506078;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .confirm-label input {
+      width: 19px;
+      height: 19px;
+      accent-color: var(--green);
+      cursor: pointer;
+    }
+
+    tbody tr.new-row {
+      background: #f0fbf6;
+    }
+
+    tbody tr.new-row:hover {
+      background: #eaf8f1;
+    }
+
+    tbody tr.confirmed-row {
+      opacity: 0.72;
+    }
+
+    .new-badge {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 7px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: var(--green);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      vertical-align: middle;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th {
+      background: #f8faf9;
+      color: #64738b;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: left;
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 17px 18px;
+      border-bottom: 1px solid #edf1ef;
+      font-size: 15px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: #f8fcfa;
+    }
+
+    .number {
+      color: #7b899d;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .certificate {
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .phone {
+      color: #42516a;
+    }
+
+    .date {
+      color: #66758a;
+      font-size: 14px;
+    }
+
+    .empty,
+    .loading,
+    .error {
+      padding: 64px 20px;
+      text-align: center;
+      color: var(--sub);
+      font-weight: 700;
+    }
+
+    .error {
+      color: var(--danger);
+    }
+
+    .notice {
+      margin-top: 18px;
+      padding: 17px 20px;
+      border-radius: 12px;
+      background: #eef8f4;
+      color: #567365;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .notice strong {
+      color: var(--green-dark);
+    }
+
+    @media (max-width: 800px) {
+      .header {
+        height: 72px;
+        padding: 0 20px;
+      }
+
+      .logo {
+        font-size: 21px;
+      }
+
+      .header-right {
+        gap: 10px;
+      }
+
+      .header-link {
+        display: none;
+      }
+
+      .main {
+        width: min(100% - 28px, 1240px);
+        padding-top: 34px;
+      }
+
+      h1 {
+        font-size: 30px;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .content-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .filter-row {
+        flex-direction: column;
+      }
+
+      .search-box,
+      .certificate-filter,
+      .date-range-filter {
+        width: 100%;
+      }
+
+      .date-range-filter {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        padding: 6px 10px;
+      }
+
+      .date-range-filter input[type="date"] {
+        flex: 1;
+        min-width: 120px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="logo">시니어 자격증 신청</div>
+
+    <div class="header-right">
+      <span class="admin-badge">관리자</span>
+      <button class="header-link" type="button" onclick="location.href='/'">
+        접수 화면 보기
+      </button>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="page-title">
+      <p class="eyebrow">ADMIN</p>
+      <h1>접수 내역</h1>
+      <p class="description">
+        신청자가 접수한 내용을 한눈에 확인할 수 있습니다.
+      </p>
+    </section>
+
+    <section class="summary-grid">
+      <article class="summary-card">
+        <div class="summary-label">오늘 접수</div>
+        <div id="todayCount" class="summary-value green">-</div>
+        <div class="summary-sub">오늘 새로 들어온 신청</div>
+      </article>
+
+      <article class="summary-card">
+        <div class="summary-label">확인 대기</div>
+        <div id="pendingCount" class="summary-value">-</div>
+        <div class="summary-sub">아직 확인하지 않은 신청</div>
+      </article>
+
+      <article class="summary-card">
+        <div class="summary-label">전체 접수</div>
+        <div id="totalCount" class="summary-value">-</div>
+        <div class="summary-sub">현재까지 누적 신청</div>
+      </article>
+
+      <article class="summary-card">
+        <div class="summary-label">가장 많이 신청한 자격증</div>
+        <div id="popularCertificate" class="summary-value" style="font-size: 25px;">-</div>
+        <div id="popularSub" class="summary-sub">접수 내역 기준</div>
+      </article>
+    </section>
+
+    <section class="content-card">
+      <div class="content-header">
+        <div>
+          <h2 class="content-title">신청 목록</h2>
+          <div id="listCount" class="content-count">접수 내역을 불러오는 중입니다.</div>
+        </div>
+
+        <div class="header-actions">
+          <button class="csv-button" type="button" onclick="downloadTodayCsv()">
+            오늘 접수 CSV 저장
+          </button>
+          <button class="refresh-button" type="button" onclick="loadApplications()">
+            새로고침
+          </button>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-view="all" type="button">전체</button>
+          <button class="filter-tab" data-view="today" type="button">오늘</button>
+          <button class="filter-tab" data-view="pending" type="button">확인 대기</button>
+        </div>
+
+        <div class="filter-row">
+          <div class="search-box">
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="이름 또는 연락처를 입력하세요"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="certificate-filter">
+            <select id="certificateFilter">
+              <option value="">자격증 전체</option>
+            </select>
+          </div>
+
+          <div class="date-range-filter">
+            <span class="date-filter-label">접수일</span>
+            <input id="startDate" type="date" aria-label="접수 시작일" />
+            <span class="date-separator">~</span>
+            <input id="endDate" type="date" aria-label="접수 종료일" />
+            <button id="clearDateFilter" class="clear-date-button" type="button">
+              초기화
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>자격증</th>
+              <th>이름</th>
+              <th>연락처</th>
+              <th>접수일시</th>
+              <th>확인</th>
+            </tr>
+          </thead>
+
+          <tbody id="applicationTable">
+            <tr>
+              <td colspan="5" class="loading">접수 내역을 불러오는 중입니다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="notice">
+      <strong>관리자 안내</strong><br />
+      접수 내역은 최신 접수 순으로 표시됩니다.
+      새로 들어온 신청은 <strong>새 접수</strong> 표시로 확인하고,
+      확인이 끝난 신청은 <strong>확인완료</strong>에 체크하세요.
+    </div>
+  </main>
+
+  <script>
+    let applications = [];
+
+    const table = document.getElementById("applicationTable");
+    const todayCount = document.getElementById("todayCount");
+    const pendingCount = document.getElementById("pendingCount");
+    const totalCount = document.getElementById("totalCount");
+    const popularCertificate = document.getElementById("popularCertificate");
+    const popularSub = document.getElementById("popularSub");
+    const listCount = document.getElementById("listCount");
+    const searchInput = document.getElementById("searchInput");
+    const certificateFilter = document.getElementById("certificateFilter");
+    const startDate = document.getElementById("startDate");
+    const endDate = document.getElementById("endDate");
+    const clearDateFilter = document.getElementById("clearDateFilter");
+
+    let currentView = "all";
+
+    // 기존 Supabase/API 연동은 건드리지 않고,
+    // 확인 여부와 마지막 확인 시점만 이 관리자 브라우저에 저장합니다.
+    const CONFIRMED_KEY = "dudu_admin_confirmed";
+    const LAST_SEEN_KEY = "dudu_admin_last_seen";
+
+    function getConfirmedMap() {
+      try {
+        return JSON.parse(localStorage.getItem(CONFIRMED_KEY) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function saveConfirmedMap(map) {
+      localStorage.setItem(CONFIRMED_KEY, JSON.stringify(map));
+    }
+
+    function getLastSeen() {
+      const value = localStorage.getItem(LAST_SEEN_KEY);
+      return value ? Number(value) : null;
+    }
+
+    function setLastSeen() {
+      localStorage.setItem(LAST_SEEN_KEY, String(Date.now()));
+    }
+
+    function getTodayString() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function formatDate(value) {
+      if (!value) return "-";
+
+      const date = new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        return String(value);
+      }
+
+      return date.toLocaleString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function normalizePhone(value) {
+      const digits = String(value ?? "").replace(/\D/g, "");
+
+      if (digits.length === 11) {
+        return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+      }
+
+      if (digits.length === 10) {
+        return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+      }
+
+      return String(value ?? "-");
+    }
+
+    function normalizeCertificate(value) {
+      const text = String(value ?? "").trim();
+
+      // 화면 표시만 표준화합니다. Supabase 원본 데이터는 수정하지 않습니다.
+      const aliases = {
+        "한식": "한식조리기능사",
+        "한식조리": "한식조리기능사",
+        "한식조리 기능사": "한식조리기능사"
+      };
+
+      return aliases[text] || text || "-";
+    }
+
+    function normalizeApplication(row) {
+      return {
+        id: row.id ?? "",
+        certificate: normalizeCertificate(
+          row.certificate ?? row.certification ?? row.qualification
+        ),
+        name: row.name ?? "-",
+        phone: normalizePhone(row.phone ?? row.contact),
+        birth: row.birth_date ?? row.birth ?? "",
+        createdAt: row.created_at ?? row.createdAt ?? row.createdAtAt ?? ""
+      };
+    }
+
+    function getApplicationKey(item) {
+      return String(
+        item.id ||
+        `${item.certificate}|${item.name}|${item.phone}|${item.createdAt}`
+      );
+    }
+
+    function isConfirmed(item) {
+      const map = getConfirmedMap();
+      return Boolean(map[getApplicationKey(item)]);
+    }
+
+    function isNewApplication(item) {
+      const lastSeen = getLastSeen();
+
+      // 첫 방문에는 기존 전체 데이터에 새 배지를 붙이지 않습니다.
+      if (!lastSeen || !item.createdAt) return false;
+
+      const created = new Date(item.createdAt).getTime();
+      return !Number.isNaN(created) && created > lastSeen;
+    }
+
+    async function loadApplications() {
+      table.innerHTML = `
+        <tr>
+          <td colspan="5" class="loading">접수 내역을 불러오는 중입니다.</td>
+        </tr>
+      `;
+
+      try {
+        /*
+         * 기존 접수 화면과 같은 Vercel API를 사용합니다.
+         * 접수 화면은 /api/applications로 POST하고 있으므로
+         * 관리자에서는 같은 주소로 GET합니다.
+         */
+        const response = await fetch("/api/applications", {
+          method: "GET",
+          headers: {
+            "Accept": "application/json"
+          },
+          cache: "no-store"
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || "접수 내역을 불러오지 못했습니다.");
+        }
+
+        /*
+         * API가 배열을 직접 반환하거나
+         * { applications: [...] } 형태로 반환하는 두 경우를 모두 처리합니다.
+         */
+        const rows =
+          Array.isArray(result)
+            ? result
+            : Array.isArray(result.applications)
+              ? result.applications
+              : Array.isArray(result.data)
+                ? result.data
+                : [];
+
+        applications = rows
+          .map(normalizeApplication)
+          .sort((a, b) => {
+            const aTime = new Date(a.createdAt).getTime();
+            const bTime = new Date(b.createdAt).getTime();
+
+            if (Number.isNaN(aTime)) return 1;
+            if (Number.isNaN(bTime)) return -1;
+
+            return bTime - aTime;
+          });
+
+        updateCertificateFilter();
+        updateSummary();
+        renderTable();
+
+        // 다음 방문부터 이 시점 이후 들어온 신청만 "새 접수"로 표시합니다.
+        setLastSeen();
+
+      } catch (error) {
+        console.error("관리자 접수 목록 오류:", error);
+
+        todayCount.textContent = "-";
+        pendingCount.textContent = "-";
+        totalCount.textContent = "-";
+        popularCertificate.textContent = "-";
+        popularSub.textContent = "데이터를 불러오지 못했습니다.";
+        listCount.textContent = "접수 내역을 불러오지 못했습니다.";
+
+        table.innerHTML = `
+          <tr>
+            <td colspan="5" class="error">
+              접수 내역을 불러오지 못했습니다.<br />
+              잠시 후 새로고침해 주세요.
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    function updateCertificateFilter() {
+      const current = certificateFilter.value;
+
+      const certificates = [
+        ...new Set(
+          applications
+            .map(item => item.certificate)
+            .filter(Boolean)
+            .filter(value => value !== "-")
+        )
+      ].sort();
+
+      certificateFilter.innerHTML = `
+        <option value="">자격증 전체</option>
+        ${certificates
+          .map(cert => `<option value="${escapeHtml(cert)}">${escapeHtml(cert)}</option>`)
+          .join("")}
+      `;
+
+      if (certificates.includes(current)) {
+        certificateFilter.value = current;
+      }
+    }
+
+    function isToday(item) {
+      if (!item.createdAt) return false;
+
+      const date = new Date(item.createdAt);
+
+      if (Number.isNaN(date.getTime())) return false;
+
+      return date.toLocaleDateString("sv-SE") === getTodayString();
+    }
+
+    function updateSummary() {
+      const todayApplications = applications.filter(isToday);
+      const pendingApplications = applications.filter(item => !isConfirmed(item));
+
+      todayCount.textContent = todayApplications.length;
+      pendingCount.textContent = pendingApplications.length;
+      totalCount.textContent = applications.length;
+
+      const counts = {};
+
+      applications.forEach(item => {
+        const cert = item.certificate;
+
+        if (!cert || cert === "-") return;
+
+        counts[cert] = (counts[cert] || 0) + 1;
+      });
+
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+      if (sorted.length === 0) {
+        popularCertificate.textContent = "아직 없음";
+        popularSub.textContent = "접수 데이터가 없습니다.";
+        return;
+      }
+
+      popularCertificate.textContent = sorted[0][0];
+      popularSub.textContent = `${sorted[0][1]}건 신청`;
+    }
+
+    function getFilteredApplications() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const selectedCertificate = certificateFilter.value;
+      const selectedStartDate = startDate.value;
+      const selectedEndDate = endDate.value;
+
+      return applications.filter(item => {
+        const rawPhone = String(item.phone ?? "").replace(/\D/g, "");
+        const keywordDigits = keyword.replace(/\D/g, "");
+
+        const matchesKeyword =
+          !keyword ||
+          item.name.toLowerCase().includes(keyword) ||
+          item.phone.toLowerCase().includes(keyword) ||
+          (keywordDigits && rawPhone.includes(keywordDigits));
+
+        const matchesCertificate =
+          !selectedCertificate ||
+          item.certificate === selectedCertificate;
+
+        // 접수일은 YYYY-MM-DD 기준으로 비교해 시간대 영향을 최소화합니다.
+        const applicationDate = item.createdAt
+          ? new Date(item.createdAt).toLocaleDateString("sv-SE")
+          : "";
+
+        const matchesStartDate =
+          !selectedStartDate ||
+          (applicationDate && applicationDate >= selectedStartDate);
+
+        const matchesEndDate =
+          !selectedEndDate ||
+          (applicationDate && applicationDate <= selectedEndDate);
+
+        let matchesView = true;
+
+        if (currentView === "today") {
+          matchesView = isToday(item);
+        }
+
+        if (currentView === "pending") {
+          matchesView = !isConfirmed(item);
+        }
+
+        return (
+          matchesKeyword &&
+          matchesCertificate &&
+          matchesStartDate &&
+          matchesEndDate &&
+          matchesView
+        );
+      });
+    }
+
+    function renderTable() {
+      const filtered = getFilteredApplications();
+
+      listCount.textContent = `총 ${filtered.length}건의 접수 내역`;
+
+      if (filtered.length === 0) {
+        table.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty">
+              조건에 맞는 접수 내역이 없습니다.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      table.innerHTML = filtered.map((item, index) => {
+        const confirmed = isConfirmed(item);
+        const isNew = isNewApplication(item);
+        const key = escapeHtml(getApplicationKey(item));
+
+        return `
+          <tr class="${isNew ? "new-row " : ""}${confirmed ? "confirmed-row" : ""}">
+            <td class="number">${index + 1}</td>
+
+            <td class="certificate">
+              ${escapeHtml(item.certificate)}
+              ${isNew ? '<span class="new-badge">새 접수</span>' : ""}
+            </td>
+
+            <td>${escapeHtml(item.name)}</td>
+
+            <td class="phone">${escapeHtml(item.phone)}</td>
+
+            <td class="date">${escapeHtml(formatDate(item.createdAt))}</td>
+
+            <td class="confirm-cell">
+              <label class="confirm-label">
+                <input
+                  type="checkbox"
+                  ${confirmed ? "checked" : ""}
+                  data-confirm-key="${key}"
+                  onchange="toggleConfirmed(this)"
+                />
+                확인완료
+              </label>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function toggleConfirmed(checkbox) {
+      const key = checkbox.dataset.confirmKey;
+      const map = getConfirmedMap();
+
+      if (checkbox.checked) {
+        map[key] = true;
+      } else {
+        delete map[key];
+      }
+
+      saveConfirmedMap(map);
+
+      updateSummary();
+      renderTable();
+    }
+
+    function downloadTodayCsv() {
+      const todayApplications = applications.filter(isToday);
+
+      if (todayApplications.length === 0) {
+        alert("오늘 접수된 내역이 없습니다.");
+        return;
+      }
+
+      const header = ["번호", "자격증", "이름", "연락처", "생년월일", "접수일시", "확인여부"];
+
+      const rows = todayApplications.map((item, index) => [
+        index + 1,
+        item.certificate,
+        item.name,
+        item.phone,
+        item.birth,
+        formatDate(item.createdAt),
+        isConfirmed(item) ? "확인완료" : "확인대기"
+      ]);
+
+      const csv = [header, ...rows]
+        .map(row =>
+          row
+            .map(value => `"${String(value ?? "").replace(/"/g, '""')}"`)
+            .join(",")
+        )
+        .join("\r\n");
+
+      const blob = new Blob(["\uFEFF" + csv], {
+        type: "text/csv;charset=utf-8;"
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      // 파일을 다운로드한 날짜를 파일명에 사용합니다.
+      const downloadDate = new Date().toLocaleDateString("sv-SE");
+      link.download = `시니어_자격증_신청_${downloadDate}.csv`;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(url);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    document.querySelectorAll(".filter-tab").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".filter-tab").forEach(item => {
+          item.classList.remove("active");
+        });
+
+        button.classList.add("active");
+        currentView = button.dataset.view;
+
+        renderTable();
+      });
+    });
+
+    searchInput.addEventListener("input", renderTable);
+    certificateFilter.addEventListener("change", renderTable);
+    startDate.addEventListener("change", renderTable);
+    endDate.addEventListener("change", renderTable);
+
+    clearDateFilter.addEventListener("click", () => {
+      startDate.value = "";
+      endDate.value = "";
+      renderTable();
+    });
+
+    // 시작일이 종료일보다 늦어지면 바로 안내합니다.
+    startDate.addEventListener("change", () => {
+      if (startDate.value && endDate.value && startDate.value > endDate.value) {
+        endDate.value = startDate.value;
+      }
+      renderTable();
+    });
+
+    endDate.addEventListener("change", () => {
+      if (startDate.value && endDate.value && endDate.value < startDate.value) {
+        startDate.value = endDate.value;
+      }
+      renderTable();
+    });
+
+    loadApplications();
+  </script>
+</body>
+</html>

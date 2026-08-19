@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>두두 자격지원</title>
+  <title>시니어 자격증 신청 페이지</title>
 
   <style>
     * {
@@ -250,6 +250,77 @@
 
     .certificate-card.selected .selected-check {
       display: block;
+    }
+
+    /* ========================================
+       자격증 검색
+    ======================================== */
+
+    .certificate-search {
+      margin-bottom: 22px;
+    }
+
+    .search-label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 17px;
+      font-weight: 800;
+      color: #26354a;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 17px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 22px;
+      pointer-events: none;
+    }
+
+    .certificate-search-input {
+      width: 100%;
+      height: 58px;
+      border: 2px solid #d0dad5;
+      border-radius: 12px;
+      padding: 0 18px 0 52px;
+      outline: none;
+      font-size: 17px;
+      color: #172238;
+      background: #ffffff;
+    }
+
+    .certificate-search-input:focus {
+      border-color: #0b9460;
+      box-shadow: 0 0 0 3px rgba(11, 148, 96, 0.1);
+    }
+
+    .certificate-search-input::placeholder {
+      color: #9aa6b5;
+    }
+
+    .search-help {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #718096;
+    }
+
+    .search-result-message {
+      display: none;
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      background: #f5faf7;
+      color: #52665b;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .certificate-card.hidden {
+      display: none;
     }
 
     .help-text {
@@ -716,8 +787,8 @@
 
   <header>
 
-    <div class="logo">
-      두두 자격지원
+    <div class="logo" onclick="handleAdminSecretClick()" style="cursor: pointer;" title="관리자 페이지">
+      시니어 자격증 신청
     </div>
 
     <nav class="nav">
@@ -725,7 +796,7 @@
         접수 중인 시험
       </button>
 
-      <button onclick="scrollToSection('select')">
+      <button onclick="focusCertificateSearch()">
         자격증 찾기
       </button>
 
@@ -787,10 +858,45 @@
       </div>
 
 
+      <div class="certificate-search">
+
+        <label
+          class="search-label"
+          for="certificateSearch"
+        >
+          찾으시는 자격증을 입력해주세요
+        </label>
+
+        <div class="search-wrap">
+          <span class="search-icon" aria-hidden="true">🔎</span>
+
+          <input
+            id="certificateSearch"
+            class="certificate-search-input"
+            type="search"
+            autocomplete="off"
+            placeholder="예: 포크레인, 지게차 면허, 요양사, 부동산"
+            aria-label="자격증 검색"
+          />
+        </div>
+
+        <p class="search-help">
+          자격증 이름을 정확히 몰라도 평소에 부르는 말로 검색할 수 있어요.
+        </p>
+
+      </div>
+
+      <div
+        id="searchResultMessage"
+        class="search-result-message"
+        aria-live="polite"
+      ></div>
+
       <div class="certificate-grid">
 
         <button
           class="certificate-card"
+          data-certificate="한식조리기능사"
           onclick="selectCertificate('한식조리기능사', this)"
         >
 
@@ -813,6 +919,7 @@
 
         <button
           class="certificate-card"
+          data-certificate="지게차운전기능사"
           onclick="selectCertificate('지게차운전기능사', this)"
         >
 
@@ -835,6 +942,7 @@
 
         <button
           class="certificate-card"
+          data-certificate="굴착기운전기능사"
           onclick="selectCertificate('굴착기운전기능사', this)"
         >
 
@@ -857,6 +965,7 @@
 
         <button
           class="certificate-card"
+          data-certificate="전기기능사"
           onclick="selectCertificate('전기기능사', this)"
         >
 
@@ -879,6 +988,7 @@
 
         <button
           class="certificate-card"
+          data-certificate="요양보호사"
           onclick="selectCertificate('요양보호사', this)"
         >
 
@@ -901,6 +1011,7 @@
 
         <button
           class="certificate-card"
+          data-certificate="공인중개사"
           onclick="selectCertificate('공인중개사', this)"
         >
 
@@ -912,6 +1023,52 @@
 
           <div class="certificate-description">
             부동산 중개업 관련 국가전문자격
+          </div>
+
+          <div class="selected-check">
+            ✓ 선택됨
+          </div>
+
+        </button>
+
+
+        <button
+          class="certificate-card"
+          data-certificate="위생사"
+          onclick="selectCertificate('위생사', this)"
+        >
+
+          <div class="certificate-icon">🧼</div>
+
+          <div class="certificate-name">
+            위생사
+          </div>
+
+          <div class="certificate-description">
+            급식소 및 위생 관련 업무 자격
+          </div>
+
+          <div class="selected-check">
+            ✓ 선택됨
+          </div>
+
+        </button>
+
+
+        <button
+          class="certificate-card"
+          data-certificate="손해평가사"
+          onclick="selectCertificate('손해평가사', this)"
+        >
+
+          <div class="certificate-icon">🌾</div>
+
+          <div class="certificate-name">
+            손해평가사
+          </div>
+
+          <div class="certificate-description">
+            농작물 재해를 평가하는 자격
           </div>
 
           <div class="selected-check">
@@ -1429,48 +1586,243 @@
         description: "한식 조리 관련 국가기술자격",
         institution: "큐넷",
         type: "필기",
-        fee: "14,500원"
+        fee: "14,500원",
+        keywords: [
+          "한식",
+          "요리",
+          "조리",
+          "한식조리",
+          "식당",
+          "요리사"
+        ]
       },
 
       "지게차운전기능사": {
         description: "물류창고 및 현장에서 필요한 자격증입니다.",
         institution: "큐넷",
         type: "필기",
-        fee: "14,500원"
+        fee: "14,500원",
+        keywords: [
+          "지게차",
+          "지게차 면허",
+          "지게차자격증",
+          "지게차 자격증",
+          "물류",
+          "면허"
+        ]
       },
 
       "굴착기운전기능사": {
         description: "건설 현장에서 필요한 굴착기 관련 자격입니다.",
         institution: "큐넷",
         type: "필기",
-        fee: "14,500원"
-      },
-
-      "전기기능사": {
-        description: "전기 설비 및 작업 관련 국가기술자격입니다.",
-        institution: "큐넷",
-        type: "필기",
-        fee: "14,500원"
+        fee: "14,500원",
+        keywords: [
+          "굴착기",
+          "굴착기운전",
+          "포크레인",
+          "포클레인",
+          "포크레인 자격증",
+          "건설",
+          "굴삭기"
+        ]
       },
 
       "요양보호사": {
         description: "요양 및 돌봄 서비스를 위한 자격입니다.",
         institution: "국시원",
         type: "시험",
-        fee: "확인 필요"
+        fee: "확인 필요",
+        keywords: [
+          "요양보호사",
+          "요양사",
+          "요양원",
+          "돌봄",
+          "간병",
+          "요양"
+        ]
+      },
+
+      "전기기능사": {
+        description: "전기 설비 및 작업 관련 국가기술자격입니다.",
+        institution: "큐넷",
+        type: "필기",
+        fee: "14,500원",
+        keywords: [
+          "전기",
+          "전기 자격증",
+          "전기기사",
+          "전기기능사",
+          "전기일",
+          "시설관리"
+        ]
+      },
+
+      "위생사": {
+        description: "급식소 및 위생 관련 업무를 위한 자격입니다.",
+        institution: "확인 필요",
+        type: "필기",
+        fee: "확인 필요",
+        keywords: [
+          "위생사",
+          "위생",
+          "급식",
+          "급식소",
+          "위생 업무"
+        ]
+      },
+
+      "손해평가사": {
+        description: "농작물 재해를 평가하는 자격입니다.",
+        institution: "큐넷",
+        type: "1차",
+        fee: "확인 필요",
+        keywords: [
+          "손해평가사",
+          "손해 평가",
+          "농작물",
+          "농업",
+          "재해",
+          "농작물 재해"
+        ]
       },
 
       "공인중개사": {
         description: "부동산 중개업 관련 국가전문자격입니다.",
         institution: "큐넷",
-        type: "필기",
-        fee: "확인 필요"
+        type: "1차",
+        fee: "확인 필요",
+        keywords: [
+          "공인중개사",
+          "중개사",
+          "부동산",
+          "부동산 자격증",
+          "집",
+          "부동산 중개"
+        ]
       }
 
     };
 
 
     let selectedCertificate = "";
+    let adminClickCount = 0;
+    let adminClickTimer = null;
+
+    function handleAdminSecretClick() {
+      adminClickCount++;
+
+      if (adminClickTimer) {
+        clearTimeout(adminClickTimer);
+      }
+
+      if (adminClickCount >= 5) {
+        adminClickCount = 0;
+        location.href = "/admin.html";
+        return;
+      }
+
+      adminClickTimer = setTimeout(() => {
+        adminClickCount = 0;
+      }, 1000);
+    }
+
+
+    /* ----------------------------------------
+       자격증 검색
+    ---------------------------------------- */
+
+    function normalizeSearchText(value) {
+      return value
+        .toLowerCase()
+        .replace(/\\s+/g, "")
+        .trim();
+    }
+
+
+    function filterCertificates() {
+
+      const input =
+        document.getElementById("certificateSearch");
+
+      const message =
+        document.getElementById("searchResultMessage");
+
+      const query =
+        normalizeSearchText(input.value);
+
+      const cards =
+        document.querySelectorAll(".certificate-card");
+
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+
+        const name =
+          card.dataset.certificate;
+
+        const data =
+          certificateData[name];
+
+        const searchableText = [
+          name,
+          data.description,
+          ...(data.keywords || [])
+        ]
+          .map(normalizeSearchText)
+          .join(" ");
+
+        const matched =
+          !query ||
+          searchableText.includes(query);
+
+        card.classList.toggle("hidden", !matched);
+
+        if (matched) {
+          visibleCount++;
+        }
+
+      });
+
+      if (!query) {
+        message.style.display = "none";
+        message.textContent = "";
+        return;
+      }
+
+      message.style.display = "block";
+
+      if (visibleCount === 0) {
+
+        message.textContent =
+          "찾으시는 자격증이 없습니다. 자격증 문의를 이용해주세요.";
+
+      } else {
+
+        message.textContent =
+          `검색 결과 ${visibleCount}개입니다. 원하는 자격증을 선택해주세요.`;
+
+      }
+
+    }
+
+
+    function focusCertificateSearch() {
+
+      scrollToSection("select");
+
+      setTimeout(() => {
+
+        const input =
+          document.getElementById("certificateSearch");
+
+        if (input) {
+          input.focus();
+        }
+
+      }, 400);
+
+    }
 
 
     /* ----------------------------------------
@@ -1863,6 +2215,18 @@
       );
 
     }
+
+
+    /* ----------------------------------------
+       자격증 검색 입력
+    ---------------------------------------- */
+
+    document
+      .getElementById("certificateSearch")
+      .addEventListener(
+        "input",
+        filterCertificates
+      );
 
 
     /* ----------------------------------------
