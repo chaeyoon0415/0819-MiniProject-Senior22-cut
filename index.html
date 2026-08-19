@@ -2468,6 +2468,19 @@ if (phoneNumber.length !== 11) {
   }
 
 
+  // 이름은 한글 완성형 2~4글자만 허용
+  // ㄱ, ㅎ, ㅏ 같은 자음/모음만 입력하거나
+  // 영어/숫자/특수문자가 포함된 경우 접수 차단
+  if (!/^[가-힣]{2,4}$/.test(name)) {
+
+    alert("이름은 한글 2~4글자로 입력해주세요.\n예: 홍길동");
+
+    document.getElementById("name").focus();
+
+    return;
+  }
+
+
   if (!/^\d{8}$/.test(birth)) {
 
     alert("생년월일을 숫자 8자리로 입력해주세요.");
