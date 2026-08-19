@@ -895,6 +895,28 @@
       margin-bottom: 26px;
     }
 
+    /* 완료 안내 문구 */
+    .completion-message {
+      margin: 0 auto 28px;
+      text-align: center;
+    }
+
+    .completion-message p {
+      margin: 0 0 8px;
+      color: #334155;
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .completion-message strong {
+      display: block;
+      color: #087a4d;
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
     /* ========================================
        서비스 안내
     ======================================== */
@@ -1829,12 +1851,8 @@
         </div>
 
         <h2>
-          신청이 완료되었습니다!
-        </h2>
-
-        <p>
           자격증 신청이 정상적으로 접수되었습니다.
-        </p>
+        </h2>
 
 
         <div class="application-number">
@@ -1844,6 +1862,12 @@
             20250819-0001
           </span>
 
+        </div>
+
+
+        <div class="completion-message" aria-live="polite">
+          <p>접수하신 내역은 문자로 전송됩니다.</p>
+          <strong>합격을 기원합니다!</strong>
         </div>
 
 
@@ -2781,7 +2805,7 @@ if (phoneNumber.length !== 11) {
     function showHelp() {
 
       alert(
-        "자격증 문의\n\n전화 문의: 1588-XXXX\n평일 09:00 ~ 18:00"
+        "자격증 문의\n\n전화 문의: 1588-1111\n평일 09:00 ~ 18:00"
       );
 
     }
