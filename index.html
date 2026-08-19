@@ -563,32 +563,16 @@
   </main>
 
 
-  <!-- Supabase JavaScript 라이브러리 -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
+  <script>
   // ==========================================
-  // 1. Supabase 연결 설정
-  // ==========================================
-
-  const SUPABASE_URL = "https://czqgtswyymonstdsykcd.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6cWd0c3d5eW1vbnN0ZHN5a2NkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzc1MDgsImV4cCI6MjEwMjY1MzUwOH0.2sGfGimemwzE9Koy4z4zVQZr0B0Mb4VjLNxhk6xvhyU";
-
-  const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
-
-
-  // ==========================================
-  // 2. 현재 선택된 자격증
+  // 1. 현재 선택된 자격증
   // ==========================================
 
   let selectedCertificate = "";
 
 
   // ==========================================
-  // 3. 자격증 선택
+  // 2. 자격증 선택
   // ==========================================
 
   function selectCertificate(certificate, button) {
@@ -611,12 +595,15 @@
 
     // 기존 메시지 숨기기
     const message = document.getElementById("message");
-    message.style.display = "none";
+
+    if (message) {
+      message.style.display = "none";
+    }
   }
 
 
   // ==========================================
-  // 4. 접수 신청
+  // 3. 접수 신청
   // ==========================================
 
   async function submitApplication() {
@@ -681,35 +668,42 @@
 
 
     // ------------------------------------------
-    // Supabase에 데이터 저장
+    // Vercel API를 통해 접수 데이터 저장
     // ------------------------------------------
 
     try {
 
-      const { data, error } =
-        await supabaseClient
-          .from("applications")
-          .insert([
-            {
-              name: name,
-              phone: phone,
-              certificate: selectedCertificate
-            }
-          ])
-          .select()
-          .single();
+      const response = await fetch("/api/applications", {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          name: name,
+          phone: phone,
+          certificate: selectedCertificate
+        })
+
+      });
+
+
+      const result = await response.json();
 
 
       // ----------------------------------------
       // 저장 실패
       // ----------------------------------------
 
-      if (error) {
+      if (!response.ok) {
 
-        console.error("Supabase 오류:", error);
+        console.error("접수 오류:", result);
 
         message.style.display = "block";
         message.textContent =
+          result.message ||
           "접수 신청 중 문제가 발생했습니다. 다시 시도해주세요.";
 
         return;
@@ -720,11 +714,12 @@
       // 저장 성공
       // ----------------------------------------
 
-      console.log("접수 저장 성공:", data);
+      console.log("접수 저장 성공:", result);
 
       message.style.display = "block";
       message.textContent =
         `${name}님, ${selectedCertificate} 접수가 완료되었습니다.`;
+
 
       // 입력창 초기화
       document.getElementById("name").value = "";
@@ -740,6 +735,7 @@
           card.classList.remove("selected");
         });
 
+
       document.getElementById("selectedCertificate").textContent =
         "아직 선택하지 않았습니다.";
 
@@ -750,7 +746,7 @@
 
       message.style.display = "block";
       message.textContent =
-        "접수 신청 중 문제가 발생했습니다. 다시 시도해주세요.";
+        "서버와 연결할 수 없습니다. 잠시 후 다시 시도해주세요.";
 
     } finally {
 
@@ -761,6 +757,3 @@
   }
 
 </script>
-
-</body>
-</html>
