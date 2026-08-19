@@ -1819,6 +1819,7 @@
     <section
       id="complete"
       class="section"
+      style="display: none;"
     >
 
       <div class="complete">
@@ -1850,7 +1851,7 @@
 
           <button
             class="secondary-button"
-            onclick="location.reload()"
+            onclick="restartApplication()"
           >
             처음으로
           </button>
@@ -2619,8 +2620,10 @@ if (phoneNumber.length !== 11) {
 
 
     // -----------------------------
-    // 완료 화면으로 이동
+    // 완료 화면 표시 후 이동
     // -----------------------------
+
+    document.getElementById("complete").style.display = "block";
 
     scrollToSection("complete");
 
@@ -2674,6 +2677,54 @@ if (phoneNumber.length !== 11) {
         button.textContent = "글자 크기 크게 A+";
 
       }
+
+    }
+
+
+    /* ----------------------------------------
+       처음으로 돌아가기
+    ---------------------------------------- */
+
+    function restartApplication() {
+
+      selectedCertificate = "";
+
+      document.getElementById("name").value = "";
+      document.getElementById("birth").value = "";
+      document.getElementById("phone").value = "";
+
+      document.getElementById("confirmCertificate").textContent = "-";
+      document.getElementById("confirmName").textContent = "-";
+      document.getElementById("confirmBirth").textContent = "-";
+      document.getElementById("confirmPhone").textContent = "-";
+
+      const privacyConsent =
+        document.getElementById("privacyConsent");
+
+      if (privacyConsent) {
+        privacyConsent.checked = false;
+      }
+
+      document
+        .querySelectorAll(".certificate-card")
+        .forEach(card => {
+          card.classList.remove("selected");
+        });
+
+      document.getElementById("complete").style.display = "none";
+
+      document.getElementById("applicationNumber").textContent =
+        "20250819-0001";
+
+      const searchInput =
+        document.getElementById("certificateSearch");
+
+      if (searchInput) {
+        searchInput.value = "";
+        filterCertificates();
+      }
+
+      scrollToSection("select");
 
     }
 

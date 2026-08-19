@@ -3,7 +3,7 @@
 8/19(수) 17:00 테스트 - QA 폴더를 프로젝트에 넣고 하나씩 체크하세요.
 
 > 작성자: _조채윤_  
-> Vercel 주소: https://____________.vercel.app  
+> Vercel 주소: https://0819-mini-project-senior22-cut.vercel.app/  
 > 테스트 시작: 16:10  
 > 테스트 종료: 16:16
 
