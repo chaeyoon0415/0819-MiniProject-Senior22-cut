@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>자격증 접수</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      background: #0f1b2d;
+      color: #ffffff;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 50px 20px 80px;
+    }
+
+    /* 헤더 */
+    .header {
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 38px;
+      margin: 0 0 12px;
+    }
+
+    .header p {
+      font-size: 19px;
+      color: #aeb9c9;
+      margin: 0;
+    }
+
+    .section-title {
+      font-size: 27px;
+      margin-bottom: 20px;
+    }
+
+    /* 자격증 카드 영역 */
+    .certificate-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-bottom: 50px;
+    }
+
+    /* 카드 */
+    .certificate-card {
+      width: 100%;
+      min-height: 220px;
+      padding: 28px;
+      text-align: left;
+
+      background: #1a283b;
+      color: white;
+
+      border: 1px solid #304158;
+      border-radius: 17px;
+
+      cursor: pointer;
+      transition: 0.2s;
+
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .certificate-card:hover {
+      transform: translateY(-2px);
+      border-color: #4b8cff;
+      background: #1d2d43;
+    }
+
+    .certificate-card.selected {
+      border: 2px solid #4b8cff;
+      background: #20344e;
+    }
+
+    /* 접수 유형 */
+    .badge {
+      display: inline-block;
+      padding: 8px 13px;
+      margin-bottom: 18px;
+
+      background: #075d5b;
+      color: #32d6a4;
+
+      border-radius: 9px;
+
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    /* 자격증 이름 */
+    .certificate-name {
+      font-size: 25px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    /* 설명 */
+    .certificate-description {
+      font-size: 17px;
+      color: #aeb9c9;
+      margin-bottom: 22px;
+    }
+
+    /* 카드 하단 정보 */
+    .certificate-info {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+
+      padding-top: 17px;
+
+      border-top: 1px solid #2b3a4f;
+
+      font-size: 15px;
+      color: #b8c3d2;
+    }
+
+    .certificate-info strong {
+      color: #ffffff;
+    }
+
+    .fee {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* 접수 신청 영역 */
+    .application-section {
+      background: #1a283b;
+      border: 1px solid #304158;
+      border-radius: 17px;
+      padding: 35px;
+    }
+
+    .selected-certificate {
+      padding: 18px;
+      margin-bottom: 25px;
+
+      background: #111f31;
+      border-radius: 12px;
+
+      font-size: 19px;
+      color: #b8c3d2;
+    }
+
+    .selected-certificate strong {
+      color: #ffffff;
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+
+      font-size: 19px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 17px;
+
+      background: #111f31;
+      color: white;
+
+      border: 1px solid #3a4a60;
+      border-radius: 10px;
+
+      font-size: 18px;
+    }
+
+    input::placeholder {
+      color: #758297;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #4b8cff;
+    }
+
+    .submit-button {
+      width: 100%;
+      padding: 19px;
+
+      border: none;
+      border-radius: 12px;
+
+      background: #367ff5;
+      color: white;
+
+      font-size: 21px;
+      font-weight: bold;
+
+      cursor: pointer;
+    }
+
+    .submit-button:hover {
+      background: #286ddd;
+    }
+
+    .message {
+      display: none;
+
+      margin-top: 20px;
+      padding: 15px;
+
+      background: #26374d;
+      border-radius: 10px;
+
+      font-size: 17px;
+    }
+
+    /* 모바일 */
+    @media (max-width: 700px) {
+      .certificate-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        width: 94%;
+        padding: 35px 10px 60px;
+      }
+
+      .header h1 {
+        font-size: 31px;
+      }
+
+      .certificate-card {
+        min-height: 200px;
+        padding: 23px;
+      }
+
+      .certificate-name {
+        font-size: 23px;
+      }
+
+      .certificate-info {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <!-- 헤더 -->
+    <header class="header">
+      <h1>자격증 접수</h1>
+      <p>응시하려는 자격증을 선택해주세요.</p>
+    </header>
+
+
+    <!-- 자격증 선택 -->
+    <section>
+
+      <h2 class="section-title">자격증 선택</h2>
+
+      <div class="certificate-grid">
+
+        <!-- 한식조리기능사 -->
+        <button
+          class="certificate-card"
+          onclick="selectCertificate('한식조리기능사', this)"
+        >
+          <div class="badge">상시 접수</div>
+
+          <div class="certificate-name">
+            한식조리기능사
+          </div>
+
+          <div class="certificate-description">
+            한식 조리 관련 국가기술자격
+          </div>
+
+          <div class="certificate-info">
+            <div>
+              접수기관<br>
+              <strong>큐넷</strong>
+            </div>
+
+            <div class="fee">
+              필기<br>
+              <strong>14,500원</strong>
+            </div>
+          </div>
+        </button>
+
+
+        <!-- 지게차운전기능사 -->
+        <button
+          class="certificate-card"
+          onclick="selectCertificate('지게차운전기능사', this)"
+        >
+          <div class="badge">상시 접수</div>
+
+          <div class="certificate-name">
+            지게차운전기능사
+          </div>
+
+          <div class="certificate-description">
+            물류창고 및 현장 필수 면허
+          </div>
+
+          <div class="certificate-info">
+            <div>
+              접수기관<br>
+              <strong>큐넷</strong>
+            </div>
+
+            <div class="fee">
+              필기<br>
+              <strong>14,500원</strong>
+            </div>
+          </div>
+        </button>
+
+
+        <!-- 굴착기운전기능사 -->
+        <button
+          class="certificate-card"
+          onclick="selectCertificate('굴착기운전기능사', this)"
+        >
+          <div class="badge">상시 접수</div>
+
+          <div class="certificate-name">
+            굴착기운전기능사
+          </div>
+
+          <div class="certificate-description">
+            건설 현장에서 필요한 굴착기 자격
+          </div>
+
+          <div class="certificate-info">
+            <div>
+              접수기관<br>
+              <strong>큐넷</strong>
+            </div>
+
+            <div class="fee">
+              필기<br>
+              <strong>14,500원</strong>
+            </div>
+          </div>
+        </button>
+
+
+        <!-- 전기기능사 -->
+        <button
+          class="certificate-card"
+          onclick="selectCertificate('전기기능사', this)"
+        >
+          <div class="badge">정기 접수</div>
+
+          <div class="certificate-name">
+            전기기능사
+          </div>
+
+          <div class="certificate-description">
+            전기 설비 및 작업 관련 국가기술자격
+          </div>
+
+          <div class="certificate-info">
+            <div>
+              접수기관<br>
+              <strong>큐넷</strong>
+            </div>
+
+            <div class="fee">
+              필기<br>
+              <strong>14,500원</strong>
+            </div>
+          </div>
+        </button>
+
+
+        <!-- 손해평가사 -->
+        <button
+          class="certificate-card"
+          onclick="selectCertificate('손해평가사', this)"
+        >
+          <div class="badge">정기 접수</div>
+
+          <div class="certificate-name">
+            손해평가사
+          </div>
+
+          <div class="certificate-description">
+            농업재해보험 손해평가 관련 전문자격
+          </div>
+
+          <div class="certificate-info">
+            <div>
+              접수기관<br>
+              <strong>큐넷 전용</strong>
+            </div>
+
+            <div class="fee">
+              필기<br>
+              <strong>확인 필요</strong>
+            </div>
+          </div>
+        </button>
+
+
+        <!-- 공인중개사 -->
+        <button
+          class="certificate-card"
+          onclick="selectCertificate('공인중개사', this)"
+        >
+          <div class="badge">정기 접수</div>
+
+          <div class="certificate-name">
+            공인중개사
+          </div>
+
+          <div class="certificate-description">
+            부동산 중개업 관련 국가전문자격
+          </div>
+
+          <div class="certificate-info">
+            <div>
+              접수기관<br>
+              <strong>큐넷 전용</strong>
+            </div>
+
+            <div class="fee">
+              필기<br>
+              <strong>확인 필요</strong>
+            </div>
+          </div>
+        </button>
+
+
+        <!-- 요양보호사 -->
+        <button
+          class="certificate-card"
+          onclick="selectCertificate('요양보호사', this)"
+        >
+          <div class="badge">상시 시험</div>
+
+          <div class="certificate-name">
+            요양보호사
+          </div>
+
+          <div class="certificate-description">
+            요양 및 돌봄 서비스를 위한 자격
+          </div>
+
+          <div class="certificate-info">
+            <div>
+              접수기관<br>
+              <strong>국시원</strong>
+            </div>
+
+            <div class="fee">
+              응시료<br>
+              <strong>확인 필요</strong>
+            </div>
+          </div>
+        </button>
+
+
+        <!-- 위생사 -->
+        <button
+          class="certificate-card"
+          onclick="selectCertificate('위생사', this)"
+        >
+          <div class="badge">정기 접수</div>
+
+          <div class="certificate-name">
+            위생사
+          </div>
+
+          <div class="certificate-description">
+            위생 및 보건 관련 국가시험
+          </div>
+
+          <div class="certificate-info">
+            <div>
+              접수기관<br>
+              <strong>국시원</strong>
+            </div>
+
+            <div class="fee">
+              응시료<br>
+              <strong>확인 필요</strong>
+            </div>
+          </div>
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- 접수 신청 -->
+    <section class="application-section">
+
+      <h2 class="section-title">접수 신청</h2>
+
+      <div class="selected-certificate">
+        선택한 자격증:
+        <strong id="selectedCertificate">
+          아직 선택하지 않았습니다.
+        </strong>
+      </div>
+
+      <div class="form-group">
+        <label for="name">이름</label>
+
+        <input
+          type="text"
+          id="name"
+          placeholder="이름을 입력해주세요"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="phone">연락처</label>
+
+        <input
+          type="tel"
+          id="phone"
+          placeholder="010-0000-0000"
+        >
+      </div>
+
+      <button
+        class="submit-button"
+        onclick="submitApplication()"
+      >
+        접수 신청하기
+      </button>
+
+      <div id="message" class="message"></div>
+
+    </section>
+
+  </main>
+
+
+  <script>
+
+    let selectedCertificate = "";
+
+    // 자격증 선택
+    function selectCertificate(certificate, button) {
+
+      selectedCertificate = certificate;
+
+      const cards =
+        document.querySelectorAll(".certificate-card");
+
+      cards.forEach(card => {
+        card.classList.remove("selected");
+      });
+
+      button.classList.add("selected");
+
+      document.getElementById(
+        "selectedCertificate"
+      ).textContent = certificate;
+    }
+
+
+    // 접수 신청
+    function submitApplication() {
+
+      const name =
+        document.getElementById("name").value;
+
+      const phone =
+        document.getElementById("phone").value;
+
+      const message =
+        document.getElementById("message");
+
+
+      if (!selectedCertificate) {
+
+        message.style.display = "block";
+
+        message.textContent =
+          "먼저 자격증을 선택해주세요.";
+
+        return;
+      }
+
+
+      if (!name || !phone) {
+
+        message.style.display = "block";
+
+        message.textContent =
+          "이름과 연락처를 입력해주세요.";
+
+        return;
+      }
+
+
+      message.style.display = "block";
+
+      message.textContent =
+        `${name}님, ${selectedCertificate} 접수 신청이 완료되었습니다.`;
+
+
+      console.log({
+        name: name,
+        phone: phone,
+        certificate: selectedCertificate
+      });
+    }
+
+  </script>
+
+</body>
+</html>
