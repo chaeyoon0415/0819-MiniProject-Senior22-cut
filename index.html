@@ -1,263 +1,708 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>자격증 접수</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>두두 자격지원</title>
 
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
-      margin: 0;
-      font-family: Arial, "Noto Sans KR", sans-serif;
-      background: #FFFFFF;
-      color: #1F2937;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Noto Sans KR",
+        "Apple SD Gothic Neo",
+        sans-serif;
+
+      background: #ffffff;
+      color: #172238;
+      line-height: 1.5;
     }
 
-    .container {
-      width: 90%;
-      max-width: 1000px;
+    button,
+    input {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* ========================================
+       HEADER
+    ======================================== */
+
+    header {
+      height: 78px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 5%;
+
+      border-bottom: 1px solid #e7ece9;
+
+      background: #ffffff;
+
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      color: #087a4d;
+      letter-spacing: -1px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 36px;
+    }
+
+    .nav button {
+      background: none;
+      border: none;
+
+      font-size: 16px;
+      font-weight: 700;
+
+      color: #344158;
+    }
+
+    .nav button:hover {
+      color: #087a4d;
+    }
+
+    /* ========================================
+       전체
+    ======================================== */
+
+    .page {
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 50px 20px 80px;
+
+      padding: 35px 28px 100px;
     }
 
-    /* 헤더 */
-    .header {
-      margin-bottom: 40px;
+    /* ========================================
+       진행 단계
+    ======================================== */
+
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      margin-bottom: 34px;
+
+      font-size: 14px;
+      font-weight: 700;
+
+      color: #8a97a7;
     }
 
-    .header h1 {
-      font-size: 38px;
-      margin: 0 0 12px;
-      color: #1F2937;
+    .progress span.active {
+      color: #087a4d;
     }
 
-    .header p {
-      font-size: 19px;
-      color: #64748B;
-      margin: 0;
+    .progress-arrow {
+      color: #b9c2cc;
+    }
+
+    /* ========================================
+       SECTION
+    ======================================== */
+
+    .section {
+      margin-bottom: 90px;
+      scroll-margin-top: 110px;
+    }
+
+    .section-header {
+      margin-bottom: 30px;
+    }
+
+    .section-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 30px;
+      height: 30px;
+
+      border-radius: 50%;
+
+      background: #dff6eb;
+      color: #087a4d;
+
+      font-size: 15px;
+      font-weight: 800;
+
+      margin-right: 10px;
     }
 
     .section-title {
-      font-size: 27px;
-      margin-bottom: 20px;
-      color: #1F2937;
+      font-size: 30px;
+      font-weight: 800;
+
+      color: #172238;
+
+      letter-spacing: -1px;
     }
 
-    /* 자격증 카드 영역 */
+    .section-description {
+      margin-top: 8px;
+
+      font-size: 17px;
+      color: #718096;
+    }
+
+    /* ========================================
+       1. 자격증 선택
+    ======================================== */
+
     .certificate-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
-      margin-bottom: 50px;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 16px;
     }
 
-    /* 카드 */
     .certificate-card {
-      width: 100%;
-      min-height: 220px;
-      padding: 28px;
+      min-height: 150px;
+
+      padding: 24px;
+
+      border: 1px solid #dfe8e3;
+      border-radius: 16px;
+
+      background: #ffffff;
+
       text-align: left;
 
-      background: #F0FDF4;
-      color: #1F2937;
-
-      border: 1px solid #BBF7D0;
-      border-radius: 17px;
-
-      cursor: pointer;
-      transition: 0.2s;
-
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
     }
 
     .certificate-card:hover {
+      border-color: #55bd91;
+
+      box-shadow:
+        0 8px 24px rgba(27, 105, 72, 0.08);
+
       transform: translateY(-2px);
-      border-color: #10B981;
-      background: #DCFCE7;
     }
 
     .certificate-card.selected {
-      border: 2px solid #10B981;
-      background: #DCFCE7;
-      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
+      border: 2px solid #0b9460;
+
+      background: #f1fbf6;
+
+      box-shadow:
+        0 6px 20px rgba(11, 148, 96, 0.1);
     }
 
-    /* 접수 유형 */
-    .badge {
-      display: inline-block;
-      padding: 8px 13px;
-      margin-bottom: 18px;
-
-      background: #D1FAE5;
-      color: #047857;
-
-      border-radius: 9px;
-
-      font-size: 15px;
-      font-weight: bold;
+    .certificate-icon {
+      font-size: 30px;
+      margin-bottom: 14px;
     }
 
-    /* 자격증 이름 */
     .certificate-name {
-      font-size: 25px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #166534;
+      font-size: 20px;
+      font-weight: 800;
+
+      color: #172238;
+
+      margin-bottom: 5px;
     }
 
-    /* 설명 */
     .certificate-description {
-      font-size: 17px;
-      color: #64748B;
-      margin-bottom: 22px;
+      font-size: 14px;
+
+      color: #718096;
     }
 
-    /* 카드 하단 정보 */
-    .certificate-info {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
+    .selected-check {
+      display: none;
 
-      padding-top: 17px;
+      margin-top: 12px;
 
-      border-top: 1px solid #BBF7D0;
+      font-size: 14px;
+      font-weight: 700;
 
-      font-size: 15px;
-      color: #64748B;
+      color: #087a4d;
     }
 
-    .certificate-info strong {
-      color: #166534;
+    .certificate-card.selected .selected-check {
+      display: block;
     }
 
-    .fee {
-      text-align: right;
-      white-space: nowrap;
-    }
+    .help-text {
+      margin-top: 20px;
 
-    /* 접수 신청 영역 */
-    .application-section {
-      background: #F0FDF4;
-      border: 1px solid #BBF7D0;
-      border-radius: 17px;
-      padding: 35px;
-    }
+      padding: 16px 20px;
 
-    .selected-certificate {
-      padding: 18px;
-      margin-bottom: 25px;
-
-      background: #FFFFFF;
-      border: 1px solid #E2E8F0;
       border-radius: 12px;
 
-      font-size: 19px;
-      color: #64748B;
+      background: #f5faf7;
+
+      font-size: 14px;
+
+      color: #637386;
     }
 
-    .selected-certificate strong {
-      color: #166534;
+    /* ========================================
+       2. 자격증 상세
+    ======================================== */
+
+    .detail-card {
+      border: 1px solid #dfe8e3;
+
+      border-radius: 16px;
+
+      padding: 30px;
+
+      background: #ffffff;
+
+      max-width: 850px;
+    }
+
+    .detail-title {
+      font-size: 26px;
+      font-weight: 800;
+
+      color: #087a4d;
+
+      margin-bottom: 8px;
+    }
+
+    .detail-description {
+      color: #6f7e90;
+
+      margin-bottom: 26px;
+    }
+
+    .info-table {
+      border-top: 1px solid #e7ece9;
+    }
+
+    .info-row {
+      display: grid;
+
+      grid-template-columns: 150px 1fr;
+
+      padding: 17px 0;
+
+      border-bottom: 1px solid #edf1ef;
+
+      font-size: 16px;
+    }
+
+    .info-label {
+      color: #788699;
+      font-weight: 600;
+    }
+
+    .info-value {
+      color: #243247;
+      font-weight: 700;
+    }
+
+    /* ========================================
+       버튼
+    ======================================== */
+
+    .button-area {
+      display: flex;
+
+      justify-content: flex-end;
+
+      gap: 12px;
+
+      margin-top: 24px;
+    }
+
+    .primary-button {
+      min-width: 230px;
+      height: 54px;
+
+      padding: 0 26px;
+
+      border: none;
+      border-radius: 10px;
+
+      background: #07945e;
+      color: #ffffff;
+
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .primary-button:hover {
+      background: #067c50;
+    }
+
+    .secondary-button {
+      height: 54px;
+
+      padding: 0 24px;
+
+      border: 1px solid #ccd7d1;
+      border-radius: 10px;
+
+      background: #ffffff;
+
+      color: #435268;
+
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    /* ========================================
+       3. 신청자 정보
+    ======================================== */
+
+    .form-card {
+      max-width: 850px;
+
+      border: 1px solid #dfe8e3;
+      border-radius: 16px;
+
+      padding: 30px;
+
+      background: #ffffff;
     }
 
     .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: block;
+
+      margin-bottom: 9px;
+
+      font-size: 17px;
+      font-weight: 800;
+
+      color: #26354a;
+    }
+
+    .required {
+      color: #0a9360;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 54px;
+
+      border: 1px solid #d0dad5;
+
+      border-radius: 9px;
+
+      padding: 0 17px;
+
+      outline: none;
+
+      font-size: 16px;
+
+      color: #172238;
+
+      background: #ffffff;
+    }
+
+    .form-input:focus {
+      border-color: #0b9460;
+
+      box-shadow:
+        0 0 0 3px rgba(11, 148, 96, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: #a0aaba;
+    }
+
+    .input-help {
+      margin-top: 7px;
+
+      font-size: 13px;
+
+      color: #8b98a8;
+    }
+
+    /* ========================================
+       4. 신청 확인
+    ======================================== */
+
+    .confirm-card {
+      max-width: 850px;
+
+      border: 1px solid #dfe8e3;
+
+      border-radius: 16px;
+
+      padding: 30px;
+
+      background: #ffffff;
+    }
+
+    .confirm-title {
+      font-size: 22px;
+
+      font-weight: 800;
+
       margin-bottom: 22px;
     }
 
-    label {
-      display: block;
-      margin-bottom: 10px;
+    .confirm-row {
+      display: flex;
 
-      font-size: 19px;
-      font-weight: bold;
-      color: #1F2937;
+      justify-content: space-between;
+
+      gap: 30px;
+
+      padding: 17px 0;
+
+      border-bottom: 1px solid #edf1ef;
     }
 
-    input {
-      width: 100%;
-      padding: 17px;
+    .confirm-label {
+      color: #788699;
 
-      background: #FFFFFF;
-      color: #1F2937;
-
-      border: 1px solid #CBD5E1;
-      border-radius: 10px;
-
-      font-size: 18px;
+      font-weight: 600;
     }
 
-    input::placeholder {
-      color: #94A3B8;
+    .confirm-value {
+      color: #172238;
+
+      font-weight: 800;
+
+      text-align: right;
     }
 
-    input:focus {
-      outline: none;
-      border-color: #10B981;
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-    }
-
-    .submit-button {
-      width: 100%;
-      padding: 19px;
-
-      border: none;
-      border-radius: 12px;
-
-      background: #059669;
-      color: #FFFFFF;
-
-      font-size: 21px;
-      font-weight: bold;
-
-      cursor: pointer;
-    }
-
-    .submit-button:hover {
-      background: #047857;
-    }
-
-    .message {
-      display: none;
-
+    .confirm-warning {
       margin-top: 20px;
-      padding: 15px;
 
-      background: #E2E8F0;
-      color: #1F2937;
+      padding: 15px 18px;
+
+      background: #f5faf7;
+
       border-radius: 10px;
 
-      font-size: 17px;
+      color: #5e6f64;
+
+      font-size: 14px;
     }
 
-    /* 모바일 */
-    @media (max-width: 700px) {
+    /* ========================================
+       5. 완료
+    ======================================== */
+
+    .complete {
+      text-align: center;
+
+      max-width: 850px;
+
+      margin: 0 auto;
+
+      padding: 60px 30px;
+
+      border: 1px solid #dfe8e3;
+
+      border-radius: 18px;
+
+      background: #f7fcf9;
+    }
+
+    .complete-icon {
+      width: 72px;
+      height: 72px;
+
+      margin: 0 auto 22px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background: #dff6eb;
+
+      color: #087a4d;
+
+      font-size: 38px;
+      font-weight: 800;
+    }
+
+    .complete h2 {
+      font-size: 28px;
+
+      margin-bottom: 8px;
+    }
+
+    .complete p {
+      color: #718096;
+
+      margin-bottom: 28px;
+    }
+
+    .application-number {
+      display: inline-block;
+
+      padding: 14px 22px;
+
+      background: #ffffff;
+
+      border: 1px solid #dce8e1;
+
+      border-radius: 10px;
+
+      font-weight: 800;
+
+      color: #087a4d;
+
+      margin-bottom: 26px;
+    }
+
+    /* ========================================
+       서비스 안내
+    ======================================== */
+
+    .service-box {
+      margin-top: 50px;
+
+      max-width: 850px;
+
+      padding: 26px;
+
+      border-radius: 16px;
+
+      background: #f3faf6;
+
+      border: 1px solid #dceee5;
+    }
+
+    .service-box h3 {
+      font-size: 20px;
+
+      color: #087a4d;
+
+      margin-bottom: 18px;
+    }
+
+    .service-item {
+      display: flex;
+
+      gap: 15px;
+
+      padding: 14px 0;
+
+      border-bottom: 1px solid #dfebe5;
+    }
+
+    .service-item:last-child {
+      border-bottom: none;
+    }
+
+    .service-icon {
+      width: 36px;
+      height: 36px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background: #ffffff;
+
+      color: #087a4d;
+
+      font-weight: 800;
+    }
+
+    .service-item strong {
+      display: block;
+
+      margin-bottom: 3px;
+
+      color: #087a4d;
+    }
+
+    .service-item span {
+      font-size: 14px;
+
+      color: #718096;
+    }
+
+    /* ========================================
+       MOBILE
+    ======================================== */
+
+    @media (max-width: 800px) {
+
+      header {
+        padding: 0 20px;
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .page {
+        padding: 25px 18px 70px;
+      }
+
+      .certificate-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .section-title {
+        font-size: 26px;
+      }
+
+      .info-row {
+        grid-template-columns: 110px 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+
       .certificate-grid {
         grid-template-columns: 1fr;
       }
 
-      .container {
-        width: 94%;
-        padding: 35px 10px 60px;
+      .button-area {
+        flex-direction: column;
       }
 
-      .header h1 {
-        font-size: 31px;
+      .primary-button,
+      .secondary-button {
+        width: 100%;
       }
 
-      .certificate-card {
-        min-height: 200px;
-        padding: 23px;
+      .confirm-row {
+        flex-direction: column;
+        gap: 5px;
       }
 
-      .certificate-name {
-        font-size: 23px;
-      }
-
-      .certificate-info {
-        font-size: 14px;
+      .confirm-value {
+        text-align: left;
       }
     }
   </style>
@@ -265,28 +710,91 @@
 
 <body>
 
-  <main class="container">
+  <!-- ========================================
+       HEADER
+  ======================================== -->
 
-    <!-- 헤더 -->
-    <header class="header">
-      <h1>자격증 접수</h1>
-      <p>응시하려는 자격증을 선택해주세요.</p>
-    </header>
+  <header>
+
+    <div class="logo">
+      두두 자격지원
+    </div>
+
+    <nav class="nav">
+      <button onclick="scrollToSection('select')">
+        접수 중인 시험
+      </button>
+
+      <button onclick="scrollToSection('select')">
+        자격증 찾기
+      </button>
+
+      <button onclick="showHelp()">
+        자격증 문의
+      </button>
+    </nav>
+
+  </header>
 
 
-    <!-- 자격증 선택 -->
-    <section>
+  <main class="page">
 
-      <h2 class="section-title">자격증 선택</h2>
+    <!-- 진행 단계 -->
+
+    <div class="progress">
+
+      <span class="active">1. 자격증 선택</span>
+
+      <span class="progress-arrow">→</span>
+
+      <span>2. 정보 확인</span>
+
+      <span class="progress-arrow">→</span>
+
+      <span>3. 신청자 정보</span>
+
+      <span class="progress-arrow">→</span>
+
+      <span>4. 신청 확인</span>
+
+      <span class="progress-arrow">→</span>
+
+      <span>5. 완료</span>
+
+    </div>
+
+
+    <!-- ========================================
+         1. 자격증 선택
+    ======================================== -->
+
+    <section
+      id="select"
+      class="section"
+    >
+
+      <div class="section-header">
+
+        <h1 class="section-title">
+          <span class="section-number">1</span>
+          자격증 선택
+        </h1>
+
+        <p class="section-description">
+          원하는 자격증을 선택해주세요.
+        </p>
+
+      </div>
+
 
       <div class="certificate-grid">
 
-        <!-- 한식조리기능사 -->
         <button
           class="certificate-card"
           onclick="selectCertificate('한식조리기능사', this)"
         >
-          <div class="badge">상시 접수</div>
+
+          <div class="certificate-icon">🍳</div>
 
           <div class="certificate-name">
             한식조리기능사
@@ -296,26 +804,19 @@
             한식 조리 관련 국가기술자격
           </div>
 
-          <div class="certificate-info">
-            <div>
-              접수기관<br>
-              <strong>큐넷</strong>
-            </div>
-
-            <div class="fee">
-              필기<br>
-              <strong>14,500원</strong>
-            </div>
+          <div class="selected-check">
+            ✓ 선택됨
           </div>
+
         </button>
 
 
-        <!-- 지게차운전기능사 -->
         <button
           class="certificate-card"
           onclick="selectCertificate('지게차운전기능사', this)"
         >
-          <div class="badge">상시 접수</div>
+
+          <div class="certificate-icon">🚜</div>
 
           <div class="certificate-name">
             지게차운전기능사
@@ -325,142 +826,63 @@
             물류창고 및 현장 필수 면허
           </div>
 
-          <div class="certificate-info">
-            <div>
-              접수기관<br>
-              <strong>큐넷</strong>
-            </div>
-
-            <div class="fee">
-              필기<br>
-              <strong>14,500원</strong>
-            </div>
+          <div class="selected-check">
+            ✓ 선택됨
           </div>
+
         </button>
 
 
-        <!-- 굴착기운전기능사 -->
         <button
           class="certificate-card"
           onclick="selectCertificate('굴착기운전기능사', this)"
         >
-          <div class="badge">상시 접수</div>
+
+          <div class="certificate-icon">🚧</div>
 
           <div class="certificate-name">
             굴착기운전기능사
           </div>
 
           <div class="certificate-description">
-            건설 현장에서 필요한 굴착기 자격
+            건설 현장에서 필요한 자격
           </div>
 
-          <div class="certificate-info">
-            <div>
-              접수기관<br>
-              <strong>큐넷</strong>
-            </div>
-
-            <div class="fee">
-              필기<br>
-              <strong>14,500원</strong>
-            </div>
+          <div class="selected-check">
+            ✓ 선택됨
           </div>
+
         </button>
 
 
-        <!-- 전기기능사 -->
         <button
           class="certificate-card"
           onclick="selectCertificate('전기기능사', this)"
         >
-          <div class="badge">정기 접수</div>
+
+          <div class="certificate-icon">⚡</div>
 
           <div class="certificate-name">
             전기기능사
           </div>
 
           <div class="certificate-description">
-            전기 설비 및 작업 관련 국가기술자격
+            전기 설비 및 작업 관련 자격
           </div>
 
-          <div class="certificate-info">
-            <div>
-              접수기관<br>
-              <strong>큐넷</strong>
-            </div>
-
-            <div class="fee">
-              필기<br>
-              <strong>14,500원</strong>
-            </div>
+          <div class="selected-check">
+            ✓ 선택됨
           </div>
+
         </button>
 
 
-        <!-- 손해평가사 -->
-        <button
-          class="certificate-card"
-          onclick="selectCertificate('손해평가사', this)"
-        >
-          <div class="badge">정기 접수</div>
-
-          <div class="certificate-name">
-            손해평가사
-          </div>
-
-          <div class="certificate-description">
-            농업재해보험 손해평가 관련 전문자격
-          </div>
-
-          <div class="certificate-info">
-            <div>
-              접수기관<br>
-              <strong>큐넷 전용</strong>
-            </div>
-
-            <div class="fee">
-              필기<br>
-              <strong>확인 필요</strong>
-            </div>
-          </div>
-        </button>
-
-
-        <!-- 공인중개사 -->
-        <button
-          class="certificate-card"
-          onclick="selectCertificate('공인중개사', this)"
-        >
-          <div class="badge">정기 접수</div>
-
-          <div class="certificate-name">
-            공인중개사
-          </div>
-
-          <div class="certificate-description">
-            부동산 중개업 관련 국가전문자격
-          </div>
-
-          <div class="certificate-info">
-            <div>
-              접수기관<br>
-              <strong>큐넷 전용</strong>
-            </div>
-
-            <div class="fee">
-              필기<br>
-              <strong>확인 필요</strong>
-            </div>
-          </div>
-        </button>
-
-
-        <!-- 요양보호사 -->
         <button
           class="certificate-card"
           onclick="selectCertificate('요양보호사', this)"
         >
-          <div class="badge">상시 시험</div>
+
+          <div class="certificate-icon">🤝</div>
 
           <div class="certificate-name">
             요양보호사
@@ -470,210 +892,831 @@
             요양 및 돌봄 서비스를 위한 자격
           </div>
 
-          <div class="certificate-info">
-            <div>
-              접수기관<br>
-              <strong>국시원</strong>
-            </div>
-
-            <div class="fee">
-              응시료<br>
-              <strong>확인 필요</strong>
-            </div>
+          <div class="selected-check">
+            ✓ 선택됨
           </div>
+
         </button>
 
 
-        <!-- 위생사 -->
         <button
           class="certificate-card"
-          onclick="selectCertificate('위생사', this)"
+          onclick="selectCertificate('공인중개사', this)"
         >
-          <div class="badge">정기 접수</div>
+
+          <div class="certificate-icon">🏠</div>
 
           <div class="certificate-name">
-            위생사
+            공인중개사
           </div>
 
           <div class="certificate-description">
-            위생 및 보건 관련 국가시험
+            부동산 중개업 관련 국가전문자격
           </div>
 
-          <div class="certificate-info">
-            <div>
-              접수기관<br>
-              <strong>국시원</strong>
-            </div>
-
-            <div class="fee">
-              응시료<br>
-              <strong>확인 필요</strong>
-            </div>
+          <div class="selected-check">
+            ✓ 선택됨
           </div>
+
         </button>
 
       </div>
 
+
+      <div class="help-text">
+        💡 원하는 자격증이 보이지 않는다면
+        자격증 문의를 이용해주세요.
+      </div>
+
     </section>
 
 
-    <!-- 접수 신청 -->
-    <section class="application-section">
+    <!-- ========================================
+         2. 자격증 정보
+    ======================================== -->
 
-      <h2 class="section-title">접수 신청</h2>
+    <section
+      id="detail"
+      class="section"
+    >
 
-      <div class="selected-certificate">
-        선택한 자격증:
-        <strong id="selectedCertificate">
-          아직 선택하지 않았습니다.
-        </strong>
+      <div class="section-header">
+
+        <h2 class="section-title">
+          <span class="section-number">2</span>
+          자격증 정보 확인
+        </h2>
+
+        <p class="section-description">
+          신청하기 전에 자격증 정보를 확인해주세요.
+        </p>
+
       </div>
 
-      <div class="form-group">
-        <label for="name">이름</label>
 
-        <input
-          type="text"
-          id="name"
-          placeholder="이름을 입력해주세요"
+      <div class="detail-card">
+
+        <h3
+          id="detailName"
+          class="detail-title"
         >
-      </div>
+          자격증을 선택해주세요
+        </h3>
 
-      <div class="form-group">
-        <label for="phone">연락처</label>
-
-        <input
-          type="tel"
-          id="phone"
-          placeholder="010-0000-0000"
+        <p
+          id="detailDescription"
+          class="detail-description"
         >
+          위에서 원하는 자격증을 선택하면
+          자세한 정보가 표시됩니다.
+        </p>
+
+
+        <div class="info-table">
+
+          <div class="info-row">
+
+            <div class="info-label">
+              접수기관
+            </div>
+
+            <div
+              id="detailInstitution"
+              class="info-value"
+            >
+              -
+            </div>
+
+          </div>
+
+
+          <div class="info-row">
+
+            <div class="info-label">
+              시험구분
+            </div>
+
+            <div
+              id="detailType"
+              class="info-value"
+            >
+              -
+            </div>
+
+          </div>
+
+
+          <div class="info-row">
+
+            <div class="info-label">
+              응시료
+            </div>
+
+            <div
+              id="detailFee"
+              class="info-value"
+            >
+              -
+            </div>
+
+          </div>
+
+
+          <div class="info-row">
+
+            <div class="info-label">
+              접수방법
+            </div>
+
+            <div class="info-value">
+              온라인 접수
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="button-area">
+
+          <button
+            class="secondary-button"
+            onclick="scrollToSection('select')"
+          >
+            다른 자격증 선택
+          </button>
+
+          <button
+            class="primary-button"
+            onclick="goToApplicant()"
+          >
+            이 자격증으로 신청하기
+          </button>
+
+        </div>
+
       </div>
-
-      <button
-        class="submit-button"
-        onclick="submitApplication()"
-      >
-        접수 신청하기
-      </button>
-
-      <div id="message" class="message"></div>
 
     </section>
+
+
+    <!-- ========================================
+         3. 신청자 정보
+    ======================================== -->
+
+    <section
+      id="applicant"
+      class="section"
+    >
+
+      <div class="section-header">
+
+        <h2 class="section-title">
+          <span class="section-number">3</span>
+          신청자 정보를 입력해주세요
+        </h2>
+
+        <p class="section-description">
+          정확한 정보가 접수에 필요합니다.
+        </p>
+
+      </div>
+
+
+      <div class="form-card">
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="name"
+          >
+            이름 <span class="required">*</span>
+          </label>
+
+          <input
+            id="name"
+            class="form-input"
+            type="text"
+            placeholder="이름을 입력해주세요"
+          />
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="birth"
+          >
+            생년월일 <span class="required">*</span>
+          </label>
+
+          <input
+            id="birth"
+            class="form-input"
+            type="text"
+            maxlength="8"
+            placeholder="예) 19600101"
+          />
+
+          <p class="input-help">
+            숫자 8자리로 입력해주세요.
+          </p>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label
+            class="form-label"
+            for="phone"
+          >
+            연락처 <span class="required">*</span>
+          </label>
+
+          <input
+            id="phone"
+            class="form-input"
+            type="tel"
+            placeholder="예) 010-0000-0000"
+          />
+
+        </div>
+
+
+        <div class="button-area">
+
+          <button
+            class="primary-button"
+            onclick="goToConfirm()"
+          >
+            다음
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================
+         4. 신청 확인
+    ======================================== -->
+
+    <section
+      id="confirm"
+      class="section"
+    >
+
+      <div class="section-header">
+
+        <h2 class="section-title">
+          <span class="section-number">4</span>
+          신청 내용을 확인해주세요
+        </h2>
+
+        <p class="section-description">
+          아래 내용을 확인한 후 신청해주세요.
+        </p>
+
+      </div>
+
+
+      <div class="confirm-card">
+
+        <h3 class="confirm-title">
+          신청 정보
+        </h3>
+
+
+        <div class="confirm-row">
+
+          <span class="confirm-label">
+            신청 자격증
+          </span>
+
+          <span
+            id="confirmCertificate"
+            class="confirm-value"
+          >
+            -
+          </span>
+
+        </div>
+
+
+        <div class="confirm-row">
+
+          <span class="confirm-label">
+            이름
+          </span>
+
+          <span
+            id="confirmName"
+            class="confirm-value"
+          >
+            -
+          </span>
+
+        </div>
+
+
+        <div class="confirm-row">
+
+          <span class="confirm-label">
+            생년월일
+          </span>
+
+          <span
+            id="confirmBirth"
+            class="confirm-value"
+          >
+            -
+          </span>
+
+        </div>
+
+
+        <div class="confirm-row">
+
+          <span class="confirm-label">
+            연락처
+          </span>
+
+          <span
+            id="confirmPhone"
+            class="confirm-value"
+          >
+            -
+          </span>
+
+        </div>
+
+
+        <div class="confirm-warning">
+          입력하신 정보가 정확한지 확인해주세요.
+        </div>
+
+
+        <div class="button-area">
+
+          <button
+            class="secondary-button"
+            onclick="scrollToSection('applicant')"
+          >
+            수정하기
+          </button>
+
+          <button
+            class="primary-button"
+            onclick="submitApplication()"
+          >
+            신청하기
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================
+         5. 완료
+    ======================================== -->
+
+    <section
+      id="complete"
+      class="section"
+    >
+
+      <div class="complete">
+
+        <div class="complete-icon">
+          ✓
+        </div>
+
+        <h2>
+          신청이 완료되었습니다!
+        </h2>
+
+        <p>
+          자격증 신청이 정상적으로 접수되었습니다.
+        </p>
+
+
+        <div class="application-number">
+
+          신청번호
+          <span id="applicationNumber">
+            20250819-0001
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <button
+            class="secondary-button"
+            onclick="location.reload()"
+          >
+            처음으로
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================
+         시니어 서비스
+    ======================================== -->
+
+    <div class="service-box">
+
+      <h3>
+        시니어를 위한 서비스
+      </h3>
+
+
+      <div class="service-item">
+
+        <div class="service-icon">
+          ☎
+        </div>
+
+        <div>
+
+          <strong>
+            전화 문의
+          </strong>
+
+          <span>
+            전화로도 안내를 드릴 수 있어요.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="service-item">
+
+        <div class="service-icon">
+          ?
+        </div>
+
+        <div>
+
+          <strong>
+            쉽고 간단한 접수
+          </strong>
+
+          <span>
+            어려운 용어 없이 쉽게 신청할 수 있어요.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="service-item">
+
+        <div class="service-icon">
+          ✓
+        </div>
+
+        <div>
+
+          <strong>
+            안전한 접수
+          </strong>
+
+          <span>
+            입력한 정보는 안전하게 처리됩니다.
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
 
   </main>
 
 
+  <!-- ========================================
+       JAVASCRIPT
+  ======================================== -->
+
   <script>
-  // ==========================================
-  // 1. 현재 선택된 자격증
-  // ==========================================
 
-  let selectedCertificate = "";
+    /* ----------------------------------------
+       자격증 데이터
+    ---------------------------------------- */
+
+    const certificateData = {
+
+      "한식조리기능사": {
+        description: "한식 조리 관련 국가기술자격",
+        institution: "큐넷",
+        type: "필기",
+        fee: "14,500원"
+      },
+
+      "지게차운전기능사": {
+        description: "물류창고 및 현장에서 필요한 자격증입니다.",
+        institution: "큐넷",
+        type: "필기",
+        fee: "14,500원"
+      },
+
+      "굴착기운전기능사": {
+        description: "건설 현장에서 필요한 굴착기 관련 자격입니다.",
+        institution: "큐넷",
+        type: "필기",
+        fee: "14,500원"
+      },
+
+      "전기기능사": {
+        description: "전기 설비 및 작업 관련 국가기술자격입니다.",
+        institution: "큐넷",
+        type: "필기",
+        fee: "14,500원"
+      },
+
+      "요양보호사": {
+        description: "요양 및 돌봄 서비스를 위한 자격입니다.",
+        institution: "국시원",
+        type: "시험",
+        fee: "확인 필요"
+      },
+
+      "공인중개사": {
+        description: "부동산 중개업 관련 국가전문자격입니다.",
+        institution: "큐넷",
+        type: "필기",
+        fee: "확인 필요"
+      }
+
+    };
 
 
-  // ==========================================
-  // 2. 자격증 선택
-  // ==========================================
+    let selectedCertificate = "";
 
-  function selectCertificate(certificate, button) {
 
-    selectedCertificate = certificate;
+    /* ----------------------------------------
+       자격증 선택
+    ---------------------------------------- */
 
-    // 모든 카드의 선택 표시 제거
-    const cards = document.querySelectorAll(".certificate-card");
+    function selectCertificate(name, button) {
 
-    cards.forEach(card => {
-      card.classList.remove("selected");
-    });
+      selectedCertificate = name;
 
-    // 현재 선택한 카드 표시
-    button.classList.add("selected");
+      const data = certificateData[name];
 
-    // 선택한 자격증 이름 표시
-    document.getElementById("selectedCertificate").textContent =
-      certificate;
+      // 모든 카드 선택 해제
 
-    // 기존 메시지 숨기기
-    const message = document.getElementById("message");
+      document
+        .querySelectorAll(".certificate-card")
+        .forEach(card => {
 
-    if (message) {
-      message.style.display = "none";
+          card.classList.remove("selected");
+
+        });
+
+
+      // 선택한 카드
+
+      button.classList.add("selected");
+
+
+      // 상세정보 업데이트
+
+      document.getElementById("detailName")
+        .textContent = name;
+
+      document.getElementById("detailDescription")
+        .textContent = data.description;
+
+      document.getElementById("detailInstitution")
+        .textContent = data.institution;
+
+      document.getElementById("detailType")
+        .textContent = data.type;
+
+      document.getElementById("detailFee")
+        .textContent = data.fee;
+
+
+      // 상세정보로 이동
+
+      setTimeout(() => {
+
+        scrollToSection("detail");
+
+      }, 150);
+
     }
+
+
+    /* ----------------------------------------
+       신청자 정보로 이동
+    ---------------------------------------- */
+
+    function goToApplicant() {
+
+      if (!selectedCertificate) {
+
+        alert("먼저 자격증을 선택해주세요.");
+
+        scrollToSection("select");
+
+        return;
+      }
+
+      scrollToSection("applicant");
+
+    }
+
+
+    /* ----------------------------------------
+       신청 정보 확인
+    ---------------------------------------- */
+
+    function goToConfirm() {
+
+      const name =
+        document.getElementById("name")
+          .value.trim();
+
+      const birth =
+        document.getElementById("birth")
+          .value.trim();
+
+      const phone =
+        document.getElementById("phone")
+          .value.trim();
+
+
+      if (!selectedCertificate) {
+
+        alert("자격증을 먼저 선택해주세요.");
+
+        scrollToSection("select");
+
+        return;
+
+      }
+
+
+      if (!name) {
+
+        alert("이름을 입력해주세요.");
+
+        document.getElementById("name").focus();
+
+        return;
+
+      }
+
+
+      if (!/^\d{8}$/.test(birth)) {
+
+        alert("생년월일을 숫자 8자리로 입력해주세요.");
+
+        document.getElementById("birth").focus();
+
+        return;
+
+      }
+
+
+      if (!phone) {
+
+        alert("연락처를 입력해주세요.");
+
+        document.getElementById("phone").focus();
+
+        return;
+
+      }
+
+
+      // 확인 화면에 정보 표시
+
+      document.getElementById("confirmCertificate")
+        .textContent = selectedCertificate;
+
+      document.getElementById("confirmName")
+        .textContent = name;
+
+      document.getElementById("confirmBirth")
+        .textContent = birth;
+
+      document.getElementById("confirmPhone")
+        .textContent = phone;
+
+
+      scrollToSection("confirm");
+
+    }
+
+
+    /* ----------------------------------------
+       신청하기
+    ---------------------------------------- */
+
+    async function submitApplication() {
+
+  const name =
+    document.getElementById("name")
+      .value.trim();
+
+  const birth =
+    document.getElementById("birth")
+      .value.trim();
+
+  const phone =
+    document.getElementById("phone")
+      .value.trim();
+
+
+  // -----------------------------
+  // 입력값 확인
+  // -----------------------------
+
+  if (!selectedCertificate) {
+
+    alert("자격증을 먼저 선택해주세요.");
+
+    scrollToSection("select");
+
+    return;
   }
 
 
-  // ==========================================
-  // 3. 접수 신청
-  // ==========================================
+  if (!name) {
 
-  async function submitApplication() {
+    alert("이름을 입력해주세요.");
 
-    const name =
-      document.getElementById("name").value.trim();
+    document.getElementById("name").focus();
 
-    const phone =
-      document.getElementById("phone").value.trim();
-
-    const message =
-      document.getElementById("message");
-
-    const submitButton =
-      document.querySelector(".submit-button");
+    return;
+  }
 
 
-    // ------------------------------------------
-    // 입력값 확인
-    // ------------------------------------------
+  if (!/^\d{8}$/.test(birth)) {
 
-    if (!selectedCertificate) {
+    alert("생년월일을 숫자 8자리로 입력해주세요.");
 
-      message.style.display = "block";
-      message.textContent =
-        "먼저 자격증을 선택해주세요.";
+    document.getElementById("birth").focus();
 
-      return;
-    }
+    return;
+  }
 
 
-    if (!name) {
+  if (!phone) {
 
-      message.style.display = "block";
-      message.textContent =
-        "이름을 입력해주세요.";
+    alert("연락처를 입력해주세요.");
 
-      document.getElementById("name").focus();
+    document.getElementById("phone").focus();
 
-      return;
-    }
+    return;
+  }
 
 
-    if (!phone) {
+  // -----------------------------
+  // 신청 버튼 잠시 비활성화
+  // -----------------------------
 
-      message.style.display = "block";
-      message.textContent =
-        "연락처를 입력해주세요.";
+  const button =
+    document.querySelector(
+      '#confirm .primary-button'
+    );
 
-      document.getElementById("phone").focus();
-
-      return;
-    }
-
-
-    // ------------------------------------------
-    // 중복 제출 방지
-    // ------------------------------------------
-
-    submitButton.disabled = true;
-    submitButton.textContent = "접수 중입니다...";
+  if (button) {
+    button.disabled = true;
+    button.textContent = "신청 중...";
+  }
 
 
-    // ------------------------------------------
-    // Vercel API를 통해 접수 데이터 저장
-    // ------------------------------------------
+  try {
 
-    try {
+    // -----------------------------
+    // Vercel API로 신청 정보 전송
+    // -----------------------------
 
-      const response = await fetch("/api/applications", {
+    const response =
+      await fetch("/api/applications", {
 
         method: "POST",
 
@@ -682,78 +1725,207 @@
         },
 
         body: JSON.stringify({
-          name: name,
-          phone: phone,
-          certificate: selectedCertificate
+
+          certificate:
+            selectedCertificate,
+
+          name:
+            name,
+
+          birth:
+            birth,
+
+          phone:
+            phone
+
         })
 
       });
 
 
-      const result = await response.json();
+    const result =
+      await response.json();
 
 
-      // ----------------------------------------
-      // 저장 실패
-      // ----------------------------------------
+    // -----------------------------
+    // 저장 실패
+    // -----------------------------
 
-      if (!response.ok) {
+    if (!response.ok || !result.success) {
 
-        console.error("접수 오류:", result);
+      throw new Error(
+        result.message ||
+        "접수 저장에 실패했습니다."
+      );
 
-        message.style.display = "block";
-        message.textContent =
-          result.message ||
-          "접수 신청 중 문제가 발생했습니다. 다시 시도해주세요.";
-
-        return;
-      }
-
-
-      // ----------------------------------------
-      // 저장 성공
-      // ----------------------------------------
-
-      console.log("접수 저장 성공:", result);
-
-      message.style.display = "block";
-      message.textContent =
-        `${name}님, ${selectedCertificate} 접수가 완료되었습니다.`;
-
-
-      // 입력창 초기화
-      document.getElementById("name").value = "";
-      document.getElementById("phone").value = "";
-
-
-      // 선택 표시 초기화
-      selectedCertificate = "";
-
-      document
-        .querySelectorAll(".certificate-card")
-        .forEach(card => {
-          card.classList.remove("selected");
-        });
-
-
-      document.getElementById("selectedCertificate").textContent =
-        "아직 선택하지 않았습니다.";
-
-
-    } catch (error) {
-
-      console.error("접수 처리 오류:", error);
-
-      message.style.display = "block";
-      message.textContent =
-        "서버와 연결할 수 없습니다. 잠시 후 다시 시도해주세요.";
-
-    } finally {
-
-      // 버튼 원상복구
-      submitButton.disabled = false;
-      submitButton.textContent = "접수 신청하기";
     }
+
+
+    // -----------------------------
+    // 신청번호 생성
+    // -----------------------------
+
+    const today =
+      new Date();
+
+    const year =
+      today.getFullYear();
+
+    const month =
+      String(today.getMonth() + 1)
+        .padStart(2, "0");
+
+    const day =
+      String(today.getDate())
+        .padStart(2, "0");
+
+    const random =
+      String(
+        Math.floor(
+          Math.random() * 10000
+        )
+      ).padStart(4, "0");
+
+
+    const applicationNumber =
+      `${year}${month}${day}-${random}`;
+
+
+    document.getElementById(
+      "applicationNumber"
+    ).textContent =
+      applicationNumber;
+
+
+    // -----------------------------
+    // 완료 화면으로 이동
+    // -----------------------------
+
+    scrollToSection("complete");
+
+
+  } catch (error) {
+
+    console.error(
+      "신청 저장 오류:",
+      error
+    );
+
+    alert(
+      "접수 중 문제가 발생했습니다.\n" +
+      "잠시 후 다시 시도해주세요."
+    );
+
+
+  } finally {
+
+    if (button) {
+
+      button.disabled = false;
+
+      button.textContent =
+        "신청하기";
+
+    }
+
   }
 
-</script>
+}
+
+
+    /* ----------------------------------------
+       특정 영역으로 이동
+    ---------------------------------------- */
+
+    function scrollToSection(id) {
+
+      const section =
+        document.getElementById(id);
+
+      if (!section) return;
+
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    }
+
+
+    /* ----------------------------------------
+       문의
+    ---------------------------------------- */
+
+    function showHelp() {
+
+      alert(
+        "자격증 문의\n\n전화 문의: 1588-XXXX\n평일 09:00 ~ 18:00"
+      );
+
+    }
+
+
+    /* ----------------------------------------
+       생년월일 숫자만 입력
+    ---------------------------------------- */
+
+    document
+      .getElementById("birth")
+      .addEventListener(
+        "input",
+        function() {
+
+          this.value =
+            this.value
+              .replace(/[^0-9]/g, "")
+              .slice(0, 8);
+
+        }
+      );
+
+
+    /* ----------------------------------------
+       연락처 자동 하이픈
+    ---------------------------------------- */
+
+    document
+      .getElementById("phone")
+      .addEventListener(
+        "input",
+        function() {
+
+          let value =
+            this.value
+              .replace(/[^0-9]/g, "")
+              .slice(0, 11);
+
+
+          if (value.length >= 8) {
+
+            value =
+              value.replace(
+                /(\d{3})(\d{4})(\d{0,4})/,
+                "$1-$2-$3"
+              );
+
+          } else if (value.length >= 4) {
+
+            value =
+              value.replace(
+                /(\d{3})(\d{0,4})/,
+                "$1-$2"
+              );
+
+          }
+
+
+          this.value =
+            value.replace(/-$/, "");
+
+        }
+      );
+
+  </script>
+
+</body>
+</html>
