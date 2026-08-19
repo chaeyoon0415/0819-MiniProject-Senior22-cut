@@ -244,8 +244,9 @@
 
     .filter-row {
       display: flex;
+      align-items: center;
       gap: 10px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
 
     .search-box {
@@ -273,56 +274,150 @@
     }
 
     .certificate-filter {
-      width: 220px;
+      width: 210px;
+      flex: 0 0 210px;
+    }
+
+    .sort-filter {
+      width: 160px;
+      flex: 0 0 160px;
     }
 
     .date-range-filter {
       display: flex;
       align-items: center;
       gap: 8px;
-      min-height: 44px;
-      padding: 0 10px;
-      border: 1px solid #d6e0dc;
-      border-radius: 10px;
-      background: var(--white);
+      width: 390px;
+      flex: 0 0 390px;
+      height: 44px;
     }
 
     .date-filter-label {
       color: #607087;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 800;
       white-space: nowrap;
+      margin-right: 2px;
     }
 
     .date-range-filter input[type="date"] {
-      height: 40px;
-      border: 0;
-      background: transparent;
+      width: 126px;
+      min-width: 126px;
+      height: 44px;
+      padding: 0 10px;
+      border: 1px solid #d6e0dc;
+      border-radius: 10px;
+      background: var(--white);
       color: var(--text);
       font: inherit;
+      font-size: 14px;
       outline: none;
-      min-width: 135px;
+    }
+
+    .date-range-filter input[type="date"]:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(11, 149, 96, 0.10);
     }
 
     .date-separator {
-      color: #91a0b2;
+      color: #9aa7b7;
+      font-size: 14px;
       font-weight: 800;
     }
 
     .clear-date-button {
+      height: 32px;
+      margin-left: auto;
+      margin-right: 4px;
       border: 0;
       background: #f3f6f5;
-      color: #607087;
-      border-radius: 7px;
-      padding: 7px 9px;
-      font-size: 12px;
+      color: #71819a;
+      padding: 0 11px;
+      border-radius: 8px;
+      font-size: 13px;
       font-weight: 800;
       cursor: pointer;
       white-space: nowrap;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .clear-date-button:hover {
-      background: #e8efec;
+      color: var(--green-dark);
+    }
+
+    .birth {
+      color: #42516a;
+      font-size: 14px;
+    }
+
+    .sort-filter {
+      width: 190px;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 22px 20px 24px;
+      border-top: 1px solid var(--line);
+      background: var(--white);
+      flex-wrap: wrap;
+    }
+
+    .pagination button {
+      min-width: 40px;
+      height: 40px;
+      padding: 0 10px;
+      border: 1px solid #d6e0dc;
+      border-radius: 9px;
+      background: var(--white);
+      color: #607087;
+      font-weight: 800;
+    }
+
+    .pagination button:first-child,
+    .pagination button:nth-child(2),
+    .pagination button:nth-last-child(2),
+    .pagination button:last-child {
+      border-color: transparent;
+      background: transparent;
+    }
+
+    .pagination button:hover:not(:disabled) {
+      background: #f5f8f7;
+      border-color: #b9ccc4;
+    }
+
+    .pagination button.active {
+      border-color: var(--green);
+      background: var(--green);
+      color: #fff;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .pagination-info {
+      margin: 0 10px;
+      color: var(--sub);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .confirm-status {
+      color: #506078;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .confirm-status.pending {
+      color: #9a7a3d;
     }
 
     .confirm-cell {
@@ -498,25 +593,69 @@
 
       .filter-row {
         flex-direction: column;
+        align-items: stretch;
       }
 
       .search-box,
       .certificate-filter,
+      .sort-filter,
       .date-range-filter {
         width: 100%;
+        flex: none;
       }
 
       .date-range-filter {
         justify-content: flex-start;
-        flex-wrap: wrap;
-        padding: 6px 10px;
       }
 
       .date-range-filter input[type="date"] {
         flex: 1;
-        min-width: 120px;
+        width: auto;
+        min-width: 0;
       }
     }
+    /* 접수일 필터 전체를 하나의 카드로 */
+.date-range-filter {
+  width: 470px;
+  flex: 0 0 470px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px 0 14px;
+  border: 1px solid #d6e0dc;
+  border-radius: 10px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* 날짜 입력칸은 카드 안에서 테두리 제거 */
+.date-range-filter input[type="date"] {
+  width: 126px;
+  min-width: 126px;
+  height: 32px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* 초기화 버튼도 같은 카드 안에서 오른쪽 정렬 */
+.clear-date-button {
+  height: 32px;
+  margin-left: auto;
+  margin-right: 2px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 8px;
+  background: #f3f6f5;
+  color: #71819a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
   </style>
 </head>
 
@@ -607,6 +746,13 @@
             </select>
           </div>
 
+          <div class="sort-filter">
+            <select id="sortFilter" aria-label="접수일시 정렬">
+              <option value="newest">최신순</option>
+              <option value="oldest">오래된 순</option>
+            </select>
+          </div>
+
           <div class="date-range-filter">
             <span class="date-filter-label">접수일</span>
             <input id="startDate" type="date" aria-label="접수 시작일" />
@@ -627,6 +773,7 @@
               <th>자격증</th>
               <th>이름</th>
               <th>연락처</th>
+              <th>생년월일</th>
               <th>접수일시</th>
               <th>확인</th>
             </tr>
@@ -634,23 +781,27 @@
 
           <tbody id="applicationTable">
             <tr>
-              <td colspan="5" class="loading">접수 내역을 불러오는 중입니다.</td>
+              <td colspan="7" class="loading">접수 내역을 불러오는 중입니다.</td>
             </tr>
           </tbody>
         </table>
       </div>
+
+      <div id="pagination" class="pagination" aria-label="접수 목록 페이지 이동"></div>
     </section>
 
     <div class="notice">
       <strong>관리자 안내</strong><br />
-      접수 내역은 최신 접수 순으로 표시됩니다.
-      새로 들어온 신청은 <strong>새 접수</strong> 표시로 확인하고,
-      확인이 끝난 신청은 <strong>확인완료</strong>에 체크하세요.
+      접수 내역은 한 페이지에 20개씩 표시됩니다.
+      최신순 또는 오래된 순으로 정렬할 수 있으며,
+      새로 들어온 신청은 <strong>새 접수</strong> 표시로 확인하세요.
     </div>
   </main>
 
   <script>
     let applications = [];
+    let currentPage = 1;
+    const PAGE_SIZE = 20;
 
     const table = document.getElementById("applicationTable");
     const todayCount = document.getElementById("todayCount");
@@ -661,6 +812,8 @@
     const listCount = document.getElementById("listCount");
     const searchInput = document.getElementById("searchInput");
     const certificateFilter = document.getElementById("certificateFilter");
+    const sortFilter = document.getElementById("sortFilter");
+    const pagination = document.getElementById("pagination");
     const startDate = document.getElementById("startDate");
     const endDate = document.getElementById("endDate");
     const clearDateFilter = document.getElementById("clearDateFilter");
@@ -754,7 +907,7 @@
         ),
         name: row.name ?? "-",
         phone: normalizePhone(row.phone ?? row.contact),
-        birth: row.birth_date ?? row.birth ?? "",
+        birth: row.birth_date ?? row.birthDate ?? row.birth ?? "",
         createdAt: row.created_at ?? row.createdAt ?? row.createdAtAt ?? ""
       };
     }
@@ -852,7 +1005,7 @@
 
         table.innerHTML = `
           <tr>
-            <td colspan="5" class="error">
+            <td colspan="7" class="error">
               접수 내역을 불러오지 못했습니다.<br />
               잠시 후 새로고침해 주세요.
             </td>
@@ -931,7 +1084,7 @@
       const selectedStartDate = startDate.value;
       const selectedEndDate = endDate.value;
 
-      return applications.filter(item => {
+      const filtered = applications.filter(item => {
         const rawPhone = String(item.phone ?? "").replace(/\D/g, "");
         const keywordDigits = keyword.replace(/\D/g, "");
 
@@ -945,7 +1098,6 @@
           !selectedCertificate ||
           item.certificate === selectedCertificate;
 
-        // 접수일은 YYYY-MM-DD 기준으로 비교해 시간대 영향을 최소화합니다.
         const applicationDate = item.createdAt
           ? new Date(item.createdAt).toLocaleDateString("sv-SE")
           : "";
@@ -976,32 +1128,60 @@
           matchesView
         );
       });
+
+      filtered.sort((a, b) => {
+        const aTime = new Date(a.createdAt).getTime();
+        const bTime = new Date(b.createdAt).getTime();
+
+        if (Number.isNaN(aTime)) return 1;
+        if (Number.isNaN(bTime)) return -1;
+
+        return sortFilter.value === "oldest"
+          ? aTime - bTime
+          : bTime - aTime;
+      });
+
+      return filtered;
     }
 
     function renderTable() {
       const filtered = getFilteredApplications();
+      const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
 
-      listCount.textContent = `총 ${filtered.length}건의 접수 내역`;
+      if (currentPage > totalPages) {
+        currentPage = totalPages;
+      }
+
+      const startIndex = (currentPage - 1) * PAGE_SIZE;
+      const pageItems = filtered.slice(startIndex, startIndex + PAGE_SIZE);
 
       if (filtered.length === 0) {
+        listCount.textContent = "총 0건의 접수 내역";
+
         table.innerHTML = `
           <tr>
-            <td colspan="6" class="empty">
+            <td colspan="7" class="empty">
               조건에 맞는 접수 내역이 없습니다.
             </td>
           </tr>
         `;
+
+        renderPagination(0);
         return;
       }
 
-      table.innerHTML = filtered.map((item, index) => {
+      listCount.textContent =
+        `총 ${filtered.length}건의 접수 내역 · ${currentPage} / ${totalPages}페이지`;
+
+      table.innerHTML = pageItems.map((item, index) => {
         const confirmed = isConfirmed(item);
         const isNew = isNewApplication(item);
         const key = escapeHtml(getApplicationKey(item));
+        const rowNumber = startIndex + index + 1;
 
         return `
           <tr class="${isNew ? "new-row " : ""}${confirmed ? "confirmed-row" : ""}">
-            <td class="number">${index + 1}</td>
+            <td class="number">${rowNumber}</td>
 
             <td class="certificate">
               ${escapeHtml(item.certificate)}
@@ -1011,6 +1191,8 @@
             <td>${escapeHtml(item.name)}</td>
 
             <td class="phone">${escapeHtml(item.phone)}</td>
+
+            <td class="birth">${escapeHtml(formatBirth(item.birth))}</td>
 
             <td class="date">${escapeHtml(formatDate(item.createdAt))}</td>
 
@@ -1022,12 +1204,92 @@
                   data-confirm-key="${key}"
                   onchange="toggleConfirmed(this)"
                 />
-                확인완료
+                <span class="confirm-status ${confirmed ? "" : "pending"}">
+                  ${confirmed ? "확인완료" : "확인 대기"}
+                </span>
               </label>
             </td>
           </tr>
         `;
       }).join("");
+
+      renderPagination(totalPages);
+    }
+
+    function formatBirth(value) {
+      const digits = String(value ?? "").replace(/\D/g, "");
+
+      if (digits.length === 8) {
+        return `${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6, 8)}`;
+      }
+
+      return String(value ?? "-") || "-";
+    }
+
+    function renderPagination(totalPages) {
+      if (totalPages <= 1) {
+        pagination.innerHTML = "";
+        return;
+      }
+
+      let html = `
+        <button
+          type="button"
+          onclick="changePage(1)"
+          ${currentPage === 1 ? "disabled" : ""}
+          aria-label="첫 페이지"
+        >&lt;&lt;</button>
+
+        <button
+          type="button"
+          onclick="changePage(${currentPage - 1})"
+          ${currentPage === 1 ? "disabled" : ""}
+          aria-label="이전 페이지"
+        >&lt;</button>
+      `;
+
+      for (let page = 1; page <= totalPages; page++) {
+        html += `
+          <button
+            type="button"
+            class="${page === currentPage ? "active" : ""}"
+            onclick="changePage(${page})"
+            aria-label="${page}페이지"
+            ${page === currentPage ? "aria-current=\"page\"" : ""}
+          >${page}</button>
+        `;
+      }
+
+      html += `
+        <button
+          type="button"
+          onclick="changePage(${currentPage + 1})"
+          ${currentPage === totalPages ? "disabled" : ""}
+          aria-label="다음 페이지"
+        >&gt;</button>
+
+        <button
+          type="button"
+          onclick="changePage(${totalPages})"
+          ${currentPage === totalPages ? "disabled" : ""}
+          aria-label="마지막 페이지"
+        >&gt;&gt;</button>
+      `;
+
+      pagination.innerHTML = html;
+    }
+
+    function changePage(page) {
+      const filtered = getFilteredApplications();
+      const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+
+      currentPage = Math.min(Math.max(1, page), totalPages);
+      renderTable();
+
+      document.querySelector(".content-card").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
     }
 
     function toggleConfirmed(checkbox) {
@@ -1110,27 +1372,36 @@
 
         button.classList.add("active");
         currentView = button.dataset.view;
+        currentPage = 1;
 
         renderTable();
       });
     });
 
-    searchInput.addEventListener("input", renderTable);
-    certificateFilter.addEventListener("change", renderTable);
-    startDate.addEventListener("change", renderTable);
-    endDate.addEventListener("change", renderTable);
+    function resetPageAndRender() {
+      currentPage = 1;
+      renderTable();
+    }
+
+    searchInput.addEventListener("input", resetPageAndRender);
+    certificateFilter.addEventListener("change", resetPageAndRender);
+    sortFilter.addEventListener("change", resetPageAndRender);
+    startDate.addEventListener("change", resetPageAndRender);
+    endDate.addEventListener("change", resetPageAndRender);
 
     clearDateFilter.addEventListener("click", () => {
       startDate.value = "";
       endDate.value = "";
+      currentPage = 1;
       renderTable();
     });
 
-    // 시작일이 종료일보다 늦어지면 바로 안내합니다.
+    // 시작일이 종료일보다 늦어지면 바로 맞춰줍니다.
     startDate.addEventListener("change", () => {
       if (startDate.value && endDate.value && startDate.value > endDate.value) {
         endDate.value = startDate.value;
       }
+      currentPage = 1;
       renderTable();
     });
 
@@ -1138,6 +1409,7 @@
       if (startDate.value && endDate.value && endDate.value < startDate.value) {
         startDate.value = endDate.value;
       }
+      currentPage = 1;
       renderTable();
     });
 
