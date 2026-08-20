@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import path from "path";
 
-// Load FAQ and Gemini helper from chatbot/stage2_share_basic or chatbot/
+// Load FAQ from chatbot/faq.json
 const faqPath = path.resolve(process.cwd(), "chatbot/faq.json");
 let FAQ = [];
 try {
@@ -11,99 +11,6 @@ try {
   }
 } catch (e) {
   console.error("FAQ load error:", e);
-}
-
-function _tokens(text) {
-  return new Set((text || "").toLowerCase().match(/[가-힣A-Za-z0-9]+/g) || []);
-}
-
-function retrieve(question, top_k = 3, min_score = 1) {
-  const qLower = question.toLowerCase();
-  const qTokens = _tokens(question);
-
-  // Define certificate synonyms / aliases map
-  const certAliases = {
-    "굴착기": ["굴착기", "굴삭기", "포크레인", "포클레인"],
-    "포크레인": ["굴착기", "굴삭기", "포크레인", "포클레인"],
-    "지게차": ["지게차"],
-    "한식조리기능사": ["한식", "한식조리", "한식조리기능사", "요리"],
-    "요양보호사": ["요양보호사", "요양사", "간병"],
-    "전기기능사": ["전기", "전기기능사"],
-    "위생사": ["위생사", "위생"],
-    "손해평가사": ["손해평가사", "손해평가"],
-    "공인중개사": ["공인중개사", "중개사", "부동산"]
-  };
-
-  // Identify which certificate is requested in the question
-  let targetCertKeyword = "";
-  for (const [certKey, aliases] of Object.entries(certAliases)) {
-    if (aliases.some(alias => qLower.includes(alias))) {
-      targetCertKeyword = certKey;
-      break;
-    }
-  }
-
-  const ranked = [];
-  for (const row of FAQ) {
-    let score = 0;
-    const title = (row.title || "").toLowerCase();
-    const text = (row.text || "").toLowerCase();
-    const keywords = (row.keywords || []).map(k => k.toLowerCase());
-
-    // 1. Certificate matching (strict check if cert is specified in question)
-    if (targetCertKeyword) {
-      const matchesCert = title.includes(targetCertKeyword) || 
-                          keywords.some(k => k.includes(targetCertKeyword)) ||
-                          (targetCertKeyword === "굴착기" && (title.includes("굴삭기") || title.includes("굴착기"))) ||
-                          (targetCertKeyword === "한식" && title.includes("한식조리"));
-
-      if (matchesCert) {
-        score += 50; // Heavy bonus for matching the correct certificate
-      } else {
-        score -= 100; // Penalty if user asked for a specific cert but this FAQ is for another cert
-      }
-    }
-
-    // 2. Intent matching (과목 / 수수료 / 자격 / 방식 등)
-    const isFeeQ = qLower.includes("수수료") || qLower.includes("응시료") || qLower.includes("비용") || qLower.includes("얼마");
-    const isQualQ = qLower.includes("자격") || qLower.includes("조건") || qLower.includes("응시자격") || qLower.includes("필요한가요");
-    const isSubjectQ = qLower.includes("과목") || qLower.includes("1차") || qLower.includes("2차") || qLower.includes("시험과목") || qLower.includes("시험 범위");
-    const isMethodQ = qLower.includes("방식") || qLower.includes("어떻게") || qLower.includes("CBT") || qLower.includes("컴퓨터");
-
-    if (isFeeQ) {
-      if (title.includes("응시수수료") || title.includes("수수료")) score += 70;
-      else score -= 40;
-    }
-    if (isQualQ) {
-      if (title.includes("응시자격") || title.includes("자격")) score += 70;
-      else score -= 40;
-    }
-    if (isSubjectQ) {
-      if (title.includes("과목") || title.includes("시험 과목") || title.includes("1차 2차") || title.includes("시험 방식") || title.includes("시험 구성")) score += 70;
-      else score -= 40;
-    }
-    if (isMethodQ) {
-      if (title.includes("방식") || title.includes("CBT") || title.includes("시험 방식")) score += 70;
-      else score -= 40;
-    }
-
-    // 3. Keyword hits from FAQ row keywords
-    for (const kw of keywords) {
-      if (qLower.includes(kw)) {
-        score += 10;
-      }
-    }
-
-    // 4. Token overlap with title & text
-    const rowTokens = _tokens(title + " " + text);
-    const overlap = [...qTokens].filter(t => rowTokens.has(t)).length;
-    score += overlap * 3;
-
-    ranked.push({ score, row });
-  }
-
-  ranked.sort((a, b) => b.score - a.score);
-  return ranked.filter(item => item.score >= min_score).slice(0, top_k);
 }
 
 async function callGemini(prompt) {
@@ -134,6 +41,66 @@ async function callGemini(prompt) {
   }
 }
 
+async function retrieve(question) {
+  // Prepare FAQ summary list for Gemini intent matching
+  const faqListSummary = FAQ.map((item, index) => {
+    return `[ID: ${index}] 자격증: ${item.cert || '기본'} | 제목: ${item.title} | 키워드: ${(item.keywords || []).join(", ")}`;
+  }).join("\n");
+
+  const selectionPrompt = `당신은 자격증 FAQ 검색 의도 분석 전문가입니다.
+사용자의 질문에 담긴 자격증 이름과 의도(예: 가격, 시험비, 수수료 -> 응시수수료 / 자격, 조건 -> 응시자격 / 과목 -> 시험과목 등 유의어 포함)를 정확히 파악하여, 아래 FAQ 목록 중 가장 알맞은 항목의 ID(숫자)를 정확히 하나만 골라주세요.
+적절한 FAQ가 없으면 정확히 "NONE"이라고 답하세요. 다른 설명은 절대 하지 마세요.
+
+[FAQ 목록]
+${faqListSummary}
+
+[사용자 질문]
+${question}
+
+가장 적절한 FAQ의 ID 숫자만 출력하세요 (예: 13):`;
+
+  try {
+    const selectedIdStr = await callGemini(selectionPrompt);
+    const matchId = parseInt(selectedIdStr.replace(/[^0-9]/g, ""), 10);
+    if (!isNaN(matchId) && FAQ[matchId]) {
+      return FAQ[matchId];
+    }
+  } catch (err) {
+    console.error("Gemini intent retrieval error:", err);
+  }
+
+  // Fallback heuristic matching if Gemini selection fails
+  const qLower = question.toLowerCase();
+  let bestRow = null;
+  let bestScore = -1;
+
+  for (const row of FAQ) {
+    let score = 0;
+    const title = (row.title || "").toLowerCase();
+    const keywords = (row.keywords || []).map(k => k.toLowerCase());
+
+    const certMatch = (row.cert && qLower.includes(row.cert.toLowerCase())) || keywords.some(k => k.length >= 2 && qLower.includes(k));
+    if (certMatch) score += 30;
+
+    if ((qLower.includes("수수료") || qLower.includes("응시료") || qLower.includes("가격") || qLower.includes("비용") || qLower.includes("얼마") || qLower.includes("시험비")) && (title.includes("수수료") || title.includes("응시수수료") || title.includes("응시료"))) {
+      score += 50;
+    }
+    if ((qLower.includes("자격") || qLower.includes("조건") || qLower.includes("응시자격")) && title.includes("응시자격")) {
+      score += 50;
+    }
+    if ((qLower.includes("과목") || qLower.includes("시험과목") || qLower.includes("1차") || qLower.includes("2차")) && (title.includes("과목") || title.includes("시험 과목"))) {
+      score += 50;
+    }
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestRow = row;
+    }
+  }
+
+  return bestScore > 0 ? bestRow : null;
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ success: false, message: "허용되지 않는 요청입니다." });
@@ -145,8 +112,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ success: false, message: "질문이 입력되지 않았습니다." });
     }
 
-    const results = retrieve(question);
-    if (results.length === 0) {
+    const bestRow = await retrieve(question);
+    if (!bestRow) {
       return res.status(200).json({
         success: true,
         status: "UNKNOWN",
@@ -155,8 +122,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const best = results[0];
-    const prompt = `당신은 자격증 시험 접수 FAQ 상담원입니다.
+    const answerPrompt = `당신은 자격증 시험 접수 FAQ 상담원입니다.
 아래 근거 안에서만 답하세요. 근거에 없는 내용을 만들지 마세요.
 근거로 답할 수 없으면 정확히 UNKNOWN이라고 답하세요.
 
@@ -164,27 +130,26 @@ export default async function handler(req, res) {
 ${question}
 
 [근거]
-${best.row.text}
+${bestRow.text}
 
 한국어 두 문장 이내로 답하세요.`;
 
     let generated = "";
     try {
-      generated = await callGemini(prompt);
+      generated = await callGemini(answerPrompt);
     } catch (err) {
-      // Fallback to FAQ text if Gemini fails or quota is exceeded
-      generated = best.row.text;
+      generated = bestRow.text;
     }
 
     if (!generated || generated.toUpperCase() === "UNKNOWN") {
-      generated = best.row.text;
+      generated = bestRow.text;
     }
 
     return res.status(200).json({
       success: true,
       status: "ANSWERED",
       answer: generated,
-      source: `${best.row.cert || ''}${best.row.cert ? ' - ' : ''}${best.row.title}`
+      source: `${bestRow.cert || ''}${bestRow.cert ? ' - ' : ''}${bestRow.title}`
     });
 
   } catch (error) {
