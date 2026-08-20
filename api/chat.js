@@ -108,7 +108,7 @@ function retrieve(question, top_k = 3, min_score = 1) {
 
 async function callGemini(prompt) {
   const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || "";
-  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
+  const model = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
 
   if (!apiKey) {
     throw new Error("API key is not configured.");
