@@ -981,7 +981,180 @@
       color: #087a4d;
     }
 
-    body.large-text .progress { font-size: 17px; }
+    /* ========================================
+       AI CHATBOT WIDGET
+    ======================================== */
+    .chatbot-widget {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: none;
+      font-family: inherit;
+    }
+
+    .chatbot-widget.show {
+      display: block;
+    }
+
+    .chatbot-toggle-btn {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: #07945e;
+      color: white;
+      border: none;
+      box-shadow: 0 6px 24px rgba(7, 148, 94, 0.3);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .chatbot-toggle-btn:hover {
+      background: #067c50;
+      transform: scale(1.05);
+    }
+
+    .chatbot-window {
+      position: absolute;
+      bottom: 84px;
+      right: 0;
+      width: 380px;
+      max-width: calc(100vw - 48px);
+      height: 520px;
+      max-height: calc(100vh - 120px);
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      border: 1px solid #dfe8e3;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+    }
+
+    .chatbot-window.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .chatbot-header {
+      background: #07945e;
+      color: #ffffff;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chatbot-header-title {
+      font-size: 18px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chatbot-close-btn {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .chatbot-messages {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      background: #f8fbf9;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-msg {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 16px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .chat-msg.bot {
+      background: #ffffff;
+      color: #172238;
+      border: 1px solid #e1ece6;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-msg.user {
+      background: #07945e;
+      color: #ffffff;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-msg.loading {
+      color: #718096;
+      font-style: italic;
+    }
+
+    .chatbot-input-area {
+      padding: 14px;
+      background: #ffffff;
+      border-top: 1px solid #e7ece9;
+      display: flex;
+      gap: 8px;
+    }
+
+    .chatbot-input {
+      flex: 1;
+      height: 46px;
+      border: 1px solid #d0dad5;
+      border-radius: 10px;
+      padding: 0 14px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .chatbot-input:focus {
+      border-color: #0b9460;
+      box-shadow: 0 0 0 3px rgba(11, 148, 96, 0.1);
+    }
+
+    .chatbot-send-btn {
+      height: 46px;
+      padding: 0 20px;
+      background: #07945e;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .chatbot-send-btn:hover {
+      background: #067c50;
+    }
+
+    body.large-text .chatbot-toggle-btn { width: 76px; height: 76px; font-size: 38px; }
+    body.large-text .chatbot-window { width: 420px; height: 580px; }
+    body.large-text .chatbot-header-title { font-size: 20px; }
+    body.large-text .chat-msg { font-size: 18px; padding: 14px 18px; }
+    body.large-text .chatbot-input { font-size: 18px; height: 52px; }
+    body.large-text .chatbot-send-btn { font-size: 18px; height: 52px; padding: 0 24px; }
     body.large-text .section-title { font-size: 36px; }
     body.large-text .section-description { font-size: 20px; }
     body.large-text .search-label,
@@ -2253,6 +2426,39 @@
 
 
   <!-- ========================================
+       AI CHATBOT WIDGET
+  ======================================== -->
+  <div id="chatbotWidget" class="chatbot-widget">
+    <div id="chatbotWindow" class="chatbot-window">
+      <div class="chatbot-header">
+        <div class="chatbot-header-title">
+          <span>💬</span> 자격증 접수 도우미 챗봇
+        </div>
+        <button class="chatbot-close-btn" onclick="toggleChatbotWindow()" aria-label="닫기">×</button>
+      </div>
+      <div id="chatbotMessages" class="chatbot-messages">
+        <div class="chat-msg bot">
+          안녕하세요! 자격증 접수나 시험에 대해 궁금한 점을 물어보세요. (예: 한식조리기능사 시험비가 얼마인가요?)
+        </div>
+      </div>
+      <div class="chatbot-input-area">
+        <input
+          type="text"
+          id="chatbotInput"
+          class="chatbot-input"
+          placeholder="궁금한 점을 입력해주세요..."
+          onkeypress="if(event.key==='Enter') sendChatMessage()"
+        />
+        <button class="chatbot-send-btn" onclick="sendChatMessage()">전송</button>
+      </div>
+    </div>
+    <button class="chatbot-toggle-btn" onclick="toggleChatbotWindow()" aria-label="챗봇 열기">
+      💬
+    </button>
+  </div>
+
+
+  <!-- ========================================
        JAVASCRIPT
   ======================================== -->
 
@@ -2301,6 +2507,12 @@
         top: 0,
         behavior: "instant"
       });
+
+      // Show chatbot widget when entering main application
+      const chatbotWidget = document.getElementById("chatbotWidget");
+      if (chatbotWidget) {
+        chatbotWidget.classList.add("show");
+      }
 
       // 안내 화면이 사라진 뒤 기존 header가 정상적으로 보이도록 함
       setTimeout(() => {
@@ -3215,8 +3427,99 @@
         filterCertificates();
       }
 
+      // Hide chatbot when returning to start/restart
+      const chatbotWidget = document.getElementById("chatbotWidget");
+      if (chatbotWidget) {
+        chatbotWidget.classList.remove("show");
+      }
+      const chatbotWindow = document.getElementById("chatbotWindow");
+      if (chatbotWindow) {
+        chatbotWindow.classList.remove("open");
+      }
+
+      // Show welcome screen again
+      const welcomeScreen = document.getElementById("welcomeScreen");
+      if (welcomeScreen) {
+        welcomeScreen.classList.remove("hidden");
+        document.body.classList.add("welcome-active");
+      }
+
       scrollToSection("select");
 
+    }
+
+
+    /* ----------------------------------------
+       챗봇 토글 및 통신
+    ---------------------------------------- */
+
+    function toggleChatbotWindow() {
+      const windowEl = document.getElementById("chatbotWindow");
+      if (windowEl) {
+        windowEl.classList.toggle("open");
+        if (windowEl.classList.contains("open")) {
+          const inputEl = document.getElementById("chatbotInput");
+          if (inputEl) inputEl.focus();
+        }
+      }
+    }
+
+    async function sendChatMessage() {
+      const inputEl = document.getElementById("chatbotInput");
+      const messagesEl = document.getElementById("chatbotMessages");
+      if (!inputEl || !messagesEl) return;
+
+      const question = inputEl.value.trim();
+      if (!question) return;
+
+      // Append user message
+      const userMsg = document.createElement("div");
+      userMsg.className = "chat-msg user";
+      userMsg.textContent = question;
+      messagesEl.appendChild(userMsg);
+
+      inputEl.value = "";
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      // Append loading message
+      const loadingMsg = document.createElement("div");
+      loadingMsg.className = "chat-msg bot loading";
+      loadingMsg.textContent = "답변을 찾고 있습니다...";
+      messagesEl.appendChild(loadingMsg);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ question })
+        });
+
+        const result = await response.json();
+        messagesEl.removeChild(loadingMsg);
+
+        const botMsg = document.createElement("div");
+        botMsg.className = "chat-msg bot";
+
+        if (response.ok && result.success) {
+          botMsg.innerHTML = `${result.answer}<br><br><span style="font-size: 13px; color: #718096;">출처: ${result.source}</span>`;
+        } else {
+          botMsg.textContent = result.message || "답변을 가져오는 중 오류가 발생했습니다.";
+        }
+
+        messagesEl.appendChild(botMsg);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      } catch (error) {
+        messagesEl.removeChild(loadingMsg);
+        const errorMsg = document.createElement("div");
+        errorMsg.className = "chat-msg bot";
+        errorMsg.textContent = "서버 통신 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+        messagesEl.appendChild(errorMsg);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
     }
 
 
