@@ -25,14 +25,64 @@ def _tokens(text):
 
 
 def retrieve(question, top_k=3, min_score=2):
-    q = _tokens(question)
+    q_lower = question.lower()
+    q_tokens = _tokens(question)
+
+    # Define intent synonym groups
+    intent_groups = {
+        "fee": ["가격", "비용", "응시료", "수수료", "얼마", "금액", "결제", "환불"],
+        "qualification": ["자격", "응시자격", "조건", "나이", "학력", "필요", "가능"],
+        "subject": ["과목", "시험과목", "출제", "범위", "내용", "시험방식"],
+        "schedule": ["일정", "날짜", "기간", "시간", "원서접수", "접수기간"],
+        "result": ["발표", "합격", "점수", "기준", "확인"]
+    }
+
+    # Identify user intents present in the question
+    active_intents = set()
+    for intent, synonyms in intent_groups.items():
+        if any(syn in q_lower for syn in synonyms):
+            active_intents.add(intent)
+
     ranked = []
     for row in FAQ:
-        keyword_hits = sum(2 for key in row["keywords"] if key.lower() in question.lower())
-        overlap = len(q & _tokens(row["title"] + " " + row["text"]))
-        score = keyword_hits + overlap
+        score = 0
+        title = (row.get("title") or "").lower()
+        text = (row.get("text") or "").lower()
+        cert = (row.get("cert") or "").lower()
+        keywords = [k.lower() for k in row.get("keywords", [])]
+
+        # 1. Certificate / Keyword matching
+        if cert and cert in q_lower:
+            score += 10
+        else:
+            for kw in keywords:
+                if len(kw) >= 2 and kw in q_lower:
+                    score += 5
+
+        # 2. Intent matching with FAQ title & keywords
+        for intent in active_intents:
+            synonyms = intent_groups[intent]
+            row_matches_intent = any(syn in title or any(syn in kw for kw in keywords) for syn in synonyms)
+            if row_matches_intent:
+                score += 25
+
+        # Specific bonus if intent words appear directly in the row title
+        if any(syn in title for syn in ["응시료", "수수료", "비용"]) and any(syn in q_lower for syn in ["가격", "비용", "응시료", "수수료", "얼마"]):
+            score += 20
+        if any(syn in title for syn in ["응시자격", "자격"]) and any(syn in q_lower for syn in ["자격", "조건", "응시자격"]):
+            score += 20
+        if any(syn in title for syn in ["과목", "시험과목"]) and any(syn in q_lower for syn in ["과목", "시험과목"]):
+            score += 20
+
+        # 3. Standard keyword hits and token overlap
+        keyword_hits = sum(2 for key in row.get("keywords", []) if key.lower() in q_lower)
+        overlap = len(q_tokens & _tokens(row.get("title", "") + " " + row.get("text", "")))
+
+        score += keyword_hits + overlap
+
         ranked.append((score, row))
-    ranked.sort(key=lambda item: (-item[0], item[1]["id"]))
+
+    ranked.sort(key=lambda item: (-item[0], item[1].get("id", "")))
     results = [(score, row) for score, row in ranked[:top_k] if score >= min_score]
     return results
 
