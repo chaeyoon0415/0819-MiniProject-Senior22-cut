@@ -1151,7 +1151,14 @@
       background: #067c50;
     }
 
-    body.large-text .chatbot-toggle-btn { width: 76px; height: 76px; font-size: 38px; }
+    body.large-text .chatbot-toggle-btn {
+      width: auto;
+      min-width: 210px;
+      height: 76px;
+      padding: 0 28px;
+      font-size: 28px;
+      white-space: nowrap;
+    }
     body.large-text .chatbot-window { width: 420px; height: 580px; }
     body.large-text .chatbot-header-title { font-size: 20px; }
     body.large-text .chat-msg { font-size: 18px; padding: 14px 18px; }
@@ -2931,6 +2938,46 @@
     }
 
 
+    /* ----------------------------------------
+       생년월일 실제 날짜 유효성 검사
+       숫자 8자리뿐 아니라 존재하는 날짜인지 확인
+    ---------------------------------------- */
+
+    function isValidBirthDate(value) {
+
+      // 숫자 8자리가 아니면 잘못된 생년월일
+      if (!/^\d{8}$/.test(value)) {
+        return false;
+      }
+
+      const year = Number(value.slice(0, 4));
+      const month = Number(value.slice(4, 6));
+      const day = Number(value.slice(6, 8));
+
+      const currentYear = new Date().getFullYear();
+
+      // 실제 출생연도로 보기 어려운 연도 차단
+      if (year < 1900 || year > currentYear) {
+        return false;
+      }
+
+      // 월 범위 확인
+      if (month < 1 || month > 12) {
+        return false;
+      }
+
+      // 해당 연도/월에 실제 존재하는 날짜인지 확인
+      const date = new Date(year, month - 1, day);
+
+      return (
+        date.getFullYear() === year &&
+        date.getMonth() === month - 1 &&
+        date.getDate() === day
+      );
+
+    }
+
+
     function showNameError(message, shouldFocus = true) {
 
       const nameInput =
@@ -3051,10 +3098,12 @@
       }
 
 
-      if (!/^\d{8}$/.test(birth)) {
+      if (!isValidBirthDate(birth)) {
 
         showBirthError(
-          "생년월일을 숫자 8자리로 입력해주세요."
+          /^\d{8}$/.test(birth)
+            ? "올바른 생년월일을 입력해주세요. 예: 19600101"
+            : "생년월일을 숫자 8자리로 입력해주세요."
         );
 
         return;
@@ -3074,10 +3123,10 @@
       const phoneNumber =
         phone.replace(/[^0-9]/g, "");
 
-      if (phoneNumber.length !== 11) {
+      if (!/^010\d{8}$/.test(phoneNumber)) {
 
         showPhoneError(
-          "연락처를 11자리로 입력해주세요. 예: 010-1234-5678"
+          "휴대폰 번호는 010으로 시작해야 합니다. 예: 010-1234-5678"
         );
 
         return;
@@ -3169,13 +3218,15 @@
       }
 
 
-      if (!/^\d{8}$/.test(birth)) {
+      if (!isValidBirthDate(birth)) {
 
         scrollToSection("applicant");
 
         setTimeout(() => {
           showBirthError(
-            "생년월일을 숫자 8자리로 입력해주세요."
+            /^\d{8}$/.test(birth)
+              ? "올바른 생년월일을 입력해주세요. 예: 19600101"
+              : "생년월일을 숫자 8자리로 입력해주세요."
           );
         }, 400);
 
@@ -3191,13 +3242,14 @@
 
       }
 
+
       const phoneNumber =
         phone.replace(/[^0-9]/g, "");
 
-      if (phoneNumber.length !== 11) {
+      if (!/^010\d{8}$/.test(phoneNumber)) {
 
         showPhoneError(
-          "연락처를 11자리로 입력해주세요. 예: 010-1234-5678"
+          "휴대폰 번호는 010으로 시작해야 합니다. 예: 010-1234-5678"
         );
 
         return;
@@ -3639,9 +3691,11 @@
             birthError.textContent = "";
           }
 
-          if (!/^\d{8}$/.test(birth)) {
+          if (!isValidBirthDate(birth)) {
             showBirthError(
-              "생년월일을 숫자 8자리로 입력해주세요.",
+              /^\d{8}$/.test(birth)
+                ? "올바른 생년월일을 입력해주세요. 예: 19600101"
+                : "생년월일을 숫자 8자리로 입력해주세요.",
               false
             );
           }
@@ -3715,9 +3769,9 @@
           const phoneNumber =
             phone.replace(/[^0-9]/g, "");
 
-          if (phoneNumber.length !== 11) {
+          if (!/^010\d{8}$/.test(phoneNumber)) {
             showPhoneError(
-              "연락처를 11자리로 입력해주세요. 예: 010-1234-5678",
+              "휴대폰 번호는 010으로 시작해야 합니다. 예: 010-1234-5678",
               false
             );
           }
